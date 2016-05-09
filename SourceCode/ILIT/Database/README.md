@@ -1,0 +1,1 @@
+Will contain the Datastore, frequent words of the language for predictive analysis and next word prediction.

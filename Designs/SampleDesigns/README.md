@@ -1,0 +1,1 @@
+This Folder will contain sample designs which where submitted in the proposal of the project.
