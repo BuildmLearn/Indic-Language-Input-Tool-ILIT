@@ -14,5 +14,5 @@ When letter is pressed, dial will have its forms...K,Ka,Ki,Kee....
 				Dynamically creates the combinations.(k+vowels----ka,ki...)
 				
 	Disadvantage :- Difficult to design.
-				Need to make perfect design to fit any size of screen.(As the size of dial and angles will change)
+				    Need to make perfect design to fit any size of screen.(As the size of dial and angles will change)
 				
