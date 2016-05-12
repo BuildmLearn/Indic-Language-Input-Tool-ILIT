@@ -6,5 +6,5 @@ Use this Link for Interactive Wireframes. [ILIT DESIGN 4 LINK](https://www.justi
 
 Inspirational Idea
 
-![idea](/idea.jpg)
+![idea](https://github.com/BuildmLearn/Indic-Language-Input-Tool-ILIT/blob/master/Designs/SampleDesigns/AdaptiveConsonant-Design4/idea.jpg)
 
