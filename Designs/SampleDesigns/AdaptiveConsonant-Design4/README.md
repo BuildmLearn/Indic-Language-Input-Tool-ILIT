@@ -6,5 +6,5 @@ Use this Link for Interactive Wireframes. [ILIT DESIGN 4 LINK](https://www.justi
 
 Inspirational Idea
 
-![idea]({{site.baseurl}}//idea.jpg)
+![idea](//idea.jpg)
 
