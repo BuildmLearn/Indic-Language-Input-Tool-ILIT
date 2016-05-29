@@ -61,7 +61,7 @@ public class SettingsActivity extends PreferenceActivity {
 				.findViewById(R.id.smallRadioButton);
 		RadioButton bigRadio = (RadioButton) layout
 				.findViewById(R.id.bigRadioButton);
-
+	//Will add more themes and layouts here
 		String smallRadioText = getStringResourceByName("settings_layout_small");
 		String bigRadioText = getStringResourceByName("settings_layout_big");
 
@@ -187,6 +187,8 @@ public class SettingsActivity extends PreferenceActivity {
 		}
 		return getString(resId);
 	}
+
+
 
 	@Override
 	public void onBackPressed() {

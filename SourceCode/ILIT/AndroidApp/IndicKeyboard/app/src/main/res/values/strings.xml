@@ -1,0 +1,60 @@
+<resources>
+    <string name="app_name">IndicKeyboard</string>
+    <string name="action_settings">Settings</string>
+    <string name="language_name">Language Name</string>
+
+    <string name="menu_language">ENG</string>
+    <!-- Special characters -->
+    <string name="backspace">400</string>
+    <string name="symbols">401</string>
+    <string name="english">402</string>
+    <string name="space">403</string>
+    <string name="enter">404</string>
+    <string name="shift">405</string>
+
+    <string name="tablet_layout_setting_key">use_small_layout</string>
+    <string name="tablet_layout_setting_title">Use small layout</string>
+    <string name="tablet_layout_setting_summary">Reduces the height of the keyboard and the key sizes</string>
+    <string name="first_run_tutorial">first_run_tutorial</string>
+    <string name="preview_your_settings">Preview</string>
+
+
+    <!-- English Language specific changes fragment -->
+    <string name="welcome_instruction">Welcome. If you are unable to see the following Hindi text then your device is not supported.</string>
+    <string name="enable_step_1">1) In the next screen, select \"ILIT \"</string>
+    <string name="default_step_1">1) In the next screen, select \"ILIT \"</string>
+    <!-- Welcome fragment -->
+    <string name="hindi_welcome_instruction">Welcome. If you are unable to see the following Hindi text then your device is not supported.</string>
+    <string name="hindi_welcome_title">क्या आपका फोन यह वाक्य हिन्दी में ठीक से दिखा रहा है?</string>
+    <!-- Enable Fragment -->
+    <string name="hindi_enable_instructions_head"> इस्तमाल करनेसे पहले इसे एनेबल और डीफाल्ट बनाना पडेगा।</string>
+    <string name="hindi_enable_step_1">१) अगले स्क्रीन पर   \" ILIT  हिन्दी \" चुनिए</string>
+    <string name="hindi_enable_step_2">२) फिर \"ओके\" दबाइए </string>
+    <string name="hindi_enable_step_3">३) अंत में आपके फोनका \"बैक\" बटन दबाइए</string>
+    <!-- Default Fragment -->
+    <string name="hindi_default_instructions_head">ILIT हिन्दी एनेबल हो चुका है। अब इसे डीफॉल्ट बनाएं। </string>
+    <string name="hindi_default_step_1">१) अगले स्क्रीन पर हिन्दी चुनिए</string>
+    <!-- Button Text -->
+    <string name="hindi_welcome_button">हाँ, ठीक है|</string>
+    <string name="hindi_enable_button"> एनेबल करें</string>
+    <string name="hindi_default_button">ILIT को डिफॉल्ट बनायें</string>
+    <!-- Congrats fragment -->
+    <string name="hindi_congrats_instruction">ILIT इस्तेमाल के लिए तैयार है।</string>
+    <string name="hindi_congrats_title">धन्यवाद</string>
+    <string name="hindi_congrats_button">सेटिंग्ज</string>
+    <!-- Settings -->
+    <string name="hindi_menu_language">HIN</string>
+    <string name="hindi_settings_instruction"> कीबोर्ड का आकार</string>
+    <string name="hindi_settings_layout_big">छोटा</string>
+    <string name="hindi_settings_layout_small">बडा</string>
+    <string name="hindi_do_you_like">क्या ILIT आपको पसंद है?</string>
+    <string name="hindi_rate_us">हमें गूगल प्ले स्टोर पर रेट करके आपकी राय भेजें.</string>
+
+    <!-- Settings -->
+    <string name="settings_instruction">keyboard size</string>
+    <string name="settings_layout_big">SMALL</string>
+    <string name="settings_layout_small">BIG</string>
+    <string name="do_you_like">Liked ILIT?</string>
+    <string name="rate_us">Rate us on Google Play Store.</string>
+
+</resources>
