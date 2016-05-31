@@ -14,9 +14,12 @@ import java.util.ArrayList;
 
 public class MainKeyboard extends InputMethodService
         implements KeyboardView.OnKeyboardActionListener{
+
     private KeyboardView kv;
     private Keyboard keyboard;
     private Keyboard extendedKeyboard;
+    private Keyboard phonepad;
+    private Keyboard symbols;
 
     private static final int SPACE_KEY = 32;
     private static final int DELIMITER_KEY =124 ;
@@ -25,6 +28,8 @@ public class MainKeyboard extends InputMethodService
     public static final int adaptive_consonantCombinations_to_vowel=-100;
     public static final int adaptive_vowel_to_consonantCombinations=-99;
     public static final int extended_adaptive =-98;
+    private static final int SYMBOL = -97;
+    private static final int PHONEPAD =-89 ;
     public static final int main_to_extended_consonant = -94;
     public static final int extended_consonant_to_main=-93;
     public int last_consonant_pressed=2325;
@@ -39,6 +44,8 @@ public class MainKeyboard extends InputMethodService
         kv = (KeyboardView) getLayoutInflater().inflate(R.layout.mainkeyboard, null);
         keyboard = new Keyboard(this, R.xml.hindi); //right now just setting it directly to hindi
         extendedKeyboard=new Keyboard(this,R.xml.hindi_extended_consonants);
+        phonepad=new Keyboard(this,R.xml.phonepad_hindi);
+        symbols=new Keyboard(this,R.xml.symbols_hindi);
         kv.setProximityCorrectionEnabled(false);
         kv.setKeyboard(keyboard);
         kv.setOnKeyboardActionListener(this);
@@ -119,6 +126,27 @@ public class MainKeyboard extends InputMethodService
             Shows the remaining Consonant
 
             */
+
+            case SYMBOL :
+                kv.setKeyboard(symbols);
+                currentKeyboardisMain=false;
+                currentEventTriggered=SYMBOL;
+                break;
+
+            case PHONEPAD :
+                kv.setKeyboard(phonepad);
+                currentKeyboardisMain=false;
+                currentEventTriggered=PHONEPAD;
+                break;
+
+            case -90 :
+                //ABC
+                kv.setKeyboard(keyboard);
+                currentKeyboardisMain = true;
+                changeAdaptive(-90); //Redraw
+                kv.invalidateAllKeys();
+                break;
+
             case main_to_extended_consonant:
                 kv.setKeyboard(extendedKeyboard);
                 currentKeyboardisMain = false;
@@ -287,7 +315,7 @@ public class MainKeyboard extends InputMethodService
             else {
 
                 if (eventcode == adaptive_consonantFillsCombinations || eventcode ==adaptive_vowel_to_consonantCombinations ||
-                        ((eventcode==main_to_extended_consonant || eventcode==extended_consonant_to_main) && !currentViewHasVowel)) {
+                        ((eventcode==main_to_extended_consonant ||eventcode==-90 || eventcode==extended_consonant_to_main) && !currentViewHasVowel)) {
                   //These events will mean that you need barakhdi in the Adaptive Area.
 
                     k.codes[0] = dependentVowels[keys.indexOf(k)]; //Get the Dependent Vowels

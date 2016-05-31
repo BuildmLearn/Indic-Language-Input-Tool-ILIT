@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<Keyboard xmlns:android="http://schemas.android.com/apk/res/android"
+    android:keyWidth="100%p"
+    android:horizontalGap="0px"
+    android:verticalGap="0px"
+    android:keyHeight="8%"
+    >
+
+    <Row>
+        <Key android:codes="2407"  android:keyLabel="१" android:keyEdgeFlags="left"/>
+        <Key android:codes="2408" android:keyLabel="२"/>
+        <Key android:codes="2409" android:keyLabel="३" android:keyEdgeFlags="right"/>
+
+    </Row>
+    <Row>
+        <Key android:codes="2410" android:keyLabel="४" android:keyEdgeFlags="left"/>
+        <Key android:codes="2411"  android:keyLabel="५" />
+        <Key android:codes="2412" android:keyLabel="६" android:keyEdgeFlags="right"/>
+
+    </Row>
+    <Row>
+        <Key android:codes="2413" android:keyLabel="७" android:keyEdgeFlags="left"/>
+        <Key android:codes="2414" android:keyLabel="८" />
+        <Key android:codes="2415"  android:keyLabel="९" android:keyEdgeFlags="right"/>
+        </Row>
+    <Row>
+        <Key android:codes="46" android:keyLabel="." android:keyEdgeFlags="left"/>
+        <Key android:codes="2406" android:keyLabel="०"/>
+        <Key android:codes="-5" android:keyIcon="@drawable/delete" android:keyEdgeFlags="right" android:isRepeatable="true"/>
+    </Row>
+    <Row android:rowEdgeFlags="bottom" android:keyWidth="25%p">
+        <Key android:codes="-97" android:keyLabel="/?!"       android:keyEdgeFlags="left"/>
+        <Key android:codes="-90" android:keyLabel="अबक"   />
+        <Key android:codes="32" android:keyIcon="@drawable/sym_keyboard_space" />
+        <Key android:codes="10"  android:isRepeatable="true" android:keyIcon="@drawable/sym_keyboard_return" android:keyEdgeFlags="right"/>
+
+    </Row>
+
+
+
+</Keyboard>
