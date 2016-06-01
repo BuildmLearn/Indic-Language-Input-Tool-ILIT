@@ -3,6 +3,8 @@
     android:horizontalGap="0px"
     android:verticalGap="0px"
     android:keyHeight="8%p"
+    android:keyTextSize="20.0sp"
+    android:labelTextSize="20.0sp"
     >
 
 
@@ -105,7 +107,7 @@
         <Key android:codes="-90" android:keyLabel="अबक"   android:keyWidth="20%p"/>
         <Key android:codes="32" android:keyIcon="@drawable/sym_keyboard_space"
             android:keyWidth="40%p" />
-        <Key android:codes="-5"  android:isRepeatable="true" android:keyIcon="@drawable/sym_keyboard_return"
+        <Key android:codes="10"  android:isRepeatable="true" android:keyIcon="@drawable/sym_keyboard_return"
             android:keyWidth="20%p" android:keyEdgeFlags="right"/>
 
     </Row>

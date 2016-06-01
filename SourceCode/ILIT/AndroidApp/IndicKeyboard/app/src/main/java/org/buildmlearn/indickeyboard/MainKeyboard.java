@@ -41,7 +41,7 @@ public class MainKeyboard extends InputMethodService
 
     @Override
     public View onCreateInputView() {
-        kv = (KeyboardView) getLayoutInflater().inflate(R.layout.mainkeyboard, null);
+        kv = (CustomKeyboardView) getLayoutInflater().inflate(R.layout.mainkeyboard, null);
         keyboard = new Keyboard(this, R.xml.hindi); //right now just setting it directly to hindi
         extendedKeyboard=new Keyboard(this,R.xml.hindi_extended_consonants);
         phonepad=new Keyboard(this,R.xml.phonepad_hindi);
@@ -49,6 +49,7 @@ public class MainKeyboard extends InputMethodService
         kv.setProximityCorrectionEnabled(false);
         kv.setKeyboard(keyboard);
         kv.setOnKeyboardActionListener(this);
+        kv.setPreviewEnabled(false);
         return kv;
     }
 
@@ -68,6 +69,8 @@ public class MainKeyboard extends InputMethodService
                 am.playSoundEffect(AudioManager.FX_KEYPRESS_STANDARD);
         }
     }
+
+
 
     @Override
     public void onPress(int primaryCode) {
@@ -302,7 +305,7 @@ public class MainKeyboard extends InputMethodService
             else if (k.codes[0] == adaptive_consonantCombinations_to_vowel) {
                 k.codes[0] = adaptive_vowel_to_consonantCombinations; //change the code of the key
                 k.icon= null; //remove the icon here
-                k.label="अ"; //set the new label
+                k.label="अ "; //set the new label
 
 
             }
@@ -323,6 +326,10 @@ public class MainKeyboard extends InputMethodService
                     if (k.codes[0] != last_consonant_pressed) {
                         k.label =k.label +String.valueOf((char) k.codes[0]);
                     }
+                    else
+                    {
+                        k.label=k.label+" ";
+                    }
 
                 }
                 else if (eventcode == adaptive_consonantCombinations_to_vowel || ((eventcode==main_to_extended_consonant || eventcode==extended_consonant_to_main) && currentViewHasVowel)) {
@@ -335,7 +342,7 @@ public class MainKeyboard extends InputMethodService
                     }
                     else {
                         //Other keys. Simply create the label from the codes
-                        k.label = String.valueOf((char) k.codes[0]);
+                        k.label = String.valueOf((char) k.codes[0]) + " ";
                     }
 
                 }
