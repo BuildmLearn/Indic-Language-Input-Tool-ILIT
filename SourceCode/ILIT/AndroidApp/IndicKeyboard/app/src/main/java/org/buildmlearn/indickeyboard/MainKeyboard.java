@@ -20,24 +20,15 @@ public class MainKeyboard extends InputMethodService
     private Keyboard extendedKeyboard;
     private Keyboard phonepad;
     private Keyboard symbols;
+    private String language;
 
-    private static final int SPACE_KEY = 32;
-    private static final int DELIMITER_KEY =124 ;
-    public static final int adaptive_dependent=-102;
-    public static final int adaptive_consonantFillsCombinations=-101;
-    public static final int adaptive_consonantCombinations_to_vowel=-100;
-    public static final int adaptive_vowel_to_consonantCombinations=-99;
-    public static final int extended_adaptive =-98;
-    private static final int SYMBOL = -97;
-    private static final int PHONEPAD =-89 ;
-    public static final int main_to_extended_consonant = -94;
-    public static final int extended_consonant_to_main=-93;
-    public int last_consonant_pressed=2325;
+    public int last_consonant_pressed;
     public static int first_consonant;
     public static boolean currentKeyboardisMain=true; //initial
     public static boolean currentViewHasVowel=true; //initial
     public static  int currentEventTriggered;
     private boolean caps = false;
+    private static boolean changeLanguage;
 
     @Override
     public View onCreateInputView() {
@@ -50,6 +41,7 @@ public class MainKeyboard extends InputMethodService
         kv.setKeyboard(keyboard);
         kv.setOnKeyboardActionListener(this);
         kv.setPreviewEnabled(false);
+        language="hindi"; //static right now. Later SharedPref
         return kv;
     }
 
@@ -69,8 +61,17 @@ public class MainKeyboard extends InputMethodService
                 am.playSoundEffect(AudioManager.FX_KEYPRESS_STANDARD);
         }
     }
+    public void onLongPress(Keyboard.Key key) {
+        /*
+        To implement to select multiple languages
+        if (key.codes[0] == Constants.SPACE_KEY) {
+            InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.showInputMethodPicker();
+            changeLanguage = true;
 
-
+        }
+        */
+    }
 
     @Override
     public void onPress(int primaryCode) {
@@ -105,11 +106,12 @@ public class MainKeyboard extends InputMethodService
                 currentEventTriggered=Keyboard.KEYCODE_DONE;
                 break;
 
-            case SPACE_KEY :
+            case Constants.SPACE_KEY :
                 /* space key code here
                  * To Add : Ability to Change Language and Keyboard here */
-                ic.commitText(" ",1);
-                currentEventTriggered=SPACE_KEY;
+                if(!changeLanguage){
+                ic.commitText(" ",1);}
+                currentEventTriggered=Constants.SPACE_KEY;
                 break;
             /*
             Delimiter Key.
@@ -117,9 +119,9 @@ public class MainKeyboard extends InputMethodService
             In Devanagari |
             So addition of this would add 1 extra space before addition of next word.
              */
-            case DELIMITER_KEY:
+            case Constants.DELIMITER_KEY:
                 ic.commitText("| ",1);
-                currentEventTriggered=DELIMITER_KEY;
+                currentEventTriggered=Constants.DELIMITER_KEY;
                 break;
 
             /*
@@ -130,16 +132,16 @@ public class MainKeyboard extends InputMethodService
 
             */
 
-            case SYMBOL :
+            case Constants.SYMBOL :
                 kv.setKeyboard(symbols);
                 currentKeyboardisMain=false;
-                currentEventTriggered=SYMBOL;
+                currentEventTriggered=Constants.SYMBOL;
                 break;
 
-            case PHONEPAD :
+            case Constants.PHONEPAD :
                 kv.setKeyboard(phonepad);
                 currentKeyboardisMain=false;
-                currentEventTriggered=PHONEPAD;
+                currentEventTriggered=Constants.PHONEPAD;
                 break;
 
             case -90 :
@@ -150,10 +152,10 @@ public class MainKeyboard extends InputMethodService
                 kv.invalidateAllKeys();
                 break;
 
-            case main_to_extended_consonant:
+            case Constants.main_to_extended_consonant:
                 kv.setKeyboard(extendedKeyboard);
                 currentKeyboardisMain = false;
-                changeAdaptive(main_to_extended_consonant); //Redraw
+                changeAdaptive(Constants.main_to_extended_consonant); //Redraw
                 kv.invalidateAllKeys();
                 break;
 
@@ -164,10 +166,10 @@ public class MainKeyboard extends InputMethodService
 
              */
 
-            case extended_consonant_to_main:
+            case Constants.extended_consonant_to_main:
                 kv.setKeyboard(keyboard);
                 currentKeyboardisMain = true;
-                changeAdaptive(extended_consonant_to_main); //Redraw
+                changeAdaptive(Constants.extended_consonant_to_main); //Redraw
                 kv.invalidateAllKeys();
                 break;
 
@@ -176,10 +178,10 @@ public class MainKeyboard extends InputMethodService
             Load vowels in the Adaptive Area
 
              */
-            case adaptive_consonantCombinations_to_vowel:
-                changeAdaptive(adaptive_consonantCombinations_to_vowel);
-                kv.invalidateAllKeys();
+            case Constants.adaptive_consonantCombinations_to_vowel:
                 currentViewHasVowel=true;
+                changeAdaptive(Constants.adaptive_consonantCombinations_to_vowel);
+                kv.invalidateAllKeys();
                 break;
               /*
             Adaptive Area has Vowels right now.
@@ -187,11 +189,10 @@ public class MainKeyboard extends InputMethodService
              consonant is the current consonant pressed or the consonant last pressed.
 
              */
-            case adaptive_vowel_to_consonantCombinations:
+            case Constants.adaptive_vowel_to_consonantCombinations:
 
-
-                changeAdaptive(adaptive_vowel_to_consonantCombinations);
                 currentViewHasVowel=false;
+                changeAdaptive(Constants.adaptive_vowel_to_consonantCombinations);
                 kv.invalidateAllKeys();
                 break;
 
@@ -211,8 +212,8 @@ public class MainKeyboard extends InputMethodService
                      */
                     if (IsConsonant(primaryCode)) {
                         last_consonant_pressed = primaryCode;
-                        changeAdaptive(adaptive_consonantFillsCombinations);
                         currentViewHasVowel=false;
+                        changeAdaptive(Constants.adaptive_consonantFillsCombinations);
                         kv.invalidateAllKeys();
 
                     }
@@ -229,12 +230,12 @@ public class MainKeyboard extends InputMethodService
                                 ic.commitText(String.valueOf((char) 2309), 1); //Add Devnagari A
 
                         }
-                        boolean dontaddprevious =currentEventTriggered==adaptive_consonantFillsCombinations;
+                        boolean dontaddprevious =currentEventTriggered==Constants.adaptive_consonantFillsCombinations;
 
                         if(!dontaddprevious && !currentViewHasVowel) {
                             ic.commitText(String.valueOf((char) last_consonant_pressed), 1); //Add previous coz Adaptive lies open
                         }
-                        currentEventTriggered=adaptive_dependent;
+                        currentEventTriggered=Constants.adaptive_dependent;
 
                     }
 
@@ -275,9 +276,10 @@ public class MainKeyboard extends InputMethodService
         first_consonant=currentKeyboardisMain ?2325 :2358; //static right now. Would make it dynamic
 
 
-        int[] dependentVowels = new int[]{last_consonant_pressed, 2366, 2367, 2368, 2369, 2370, adaptive_vowel_to_consonantCombinations, 2375, 2376, 2379, 2380, 2306, 2307, extended_adaptive};
-        int[] independentVowels =new int[]{2309, 2310, 2311, 2312, 2313, 2314, adaptive_consonantCombinations_to_vowel, 2319, 2320, 2323, 2324, 2306, 2307, extended_adaptive};
 
+
+            int [] dependentVowels=ModifyVowels.getDependentVowels(language,last_consonant_pressed);
+            int[] independentVowels=ModifyVowels.getIndependentVowels(language);
          //Get all the Keys of the keyboard. No other option!
 
          ArrayList<Keyboard.Key> keys = (ArrayList<Keyboard.Key>) kv.getKeyboard().getKeys();
@@ -293,32 +295,33 @@ public class MainKeyboard extends InputMethodService
             }
             //event : change vowels in adaptive to consonant
             //change the key
-            else if (k.codes[0] == adaptive_vowel_to_consonantCombinations) {
-
-                k.codes[0] = adaptive_consonantCombinations_to_vowel; //switch
-                k.label=null;
-                k.icon = ContextCompat.getDrawable(getApplicationContext(),R.drawable.rafar);
-
+            else if (k.codes[0] == Constants.adaptive_vowel_to_consonantCombinations) {
+                if(!currentViewHasVowel) {
+                    k.codes[0] = Constants.adaptive_consonantCombinations_to_vowel; //switch
+                    k.label = null;
+                    k.icon = ContextCompat.getDrawable(getApplicationContext(), R.drawable.rafar);
+                }
             }
             //event : change barkhadi in adaptive area to vowels
 
-            else if (k.codes[0] == adaptive_consonantCombinations_to_vowel) {
-                k.codes[0] = adaptive_vowel_to_consonantCombinations; //change the code of the key
-                k.icon= null; //remove the icon here
-                k.label="अ "; //set the new label
-
+            else if (k.codes[0] == Constants.adaptive_consonantCombinations_to_vowel ) {
+                if(currentViewHasVowel) {
+                    k.codes[0] = Constants.adaptive_vowel_to_consonantCombinations; //change the code of the key
+                    k.icon = null; //remove the icon here
+                    k.label = "अ "; //set the new label
+                }
 
             }
             //event : Forward Arrow pressed in the Adaptive Area
 
-            else if (k.codes[0] == extended_adaptive) {
+            else if (k.codes[0] == Constants.extended_adaptive) {
                 //To DO
             }
 
             else {
 
-                if (eventcode == adaptive_consonantFillsCombinations || eventcode ==adaptive_vowel_to_consonantCombinations ||
-                        ((eventcode==main_to_extended_consonant ||eventcode==-90 || eventcode==extended_consonant_to_main) && !currentViewHasVowel)) {
+                if (eventcode == Constants.adaptive_consonantFillsCombinations || eventcode ==Constants.adaptive_vowel_to_consonantCombinations ||
+                        ((eventcode==Constants.main_to_extended_consonant ||eventcode==-90 || eventcode==Constants.extended_consonant_to_main) && !currentViewHasVowel)) {
                   //These events will mean that you need barakhdi in the Adaptive Area.
 
                     k.codes[0] = dependentVowels[keys.indexOf(k)]; //Get the Dependent Vowels
@@ -332,7 +335,7 @@ public class MainKeyboard extends InputMethodService
                     }
 
                 }
-                else if (eventcode == adaptive_consonantCombinations_to_vowel || ((eventcode==main_to_extended_consonant || eventcode==extended_consonant_to_main) && currentViewHasVowel)) {
+                else if (eventcode == Constants.adaptive_consonantCombinations_to_vowel || ((eventcode==Constants.main_to_extended_consonant || eventcode==Constants.extended_consonant_to_main) && currentViewHasVowel)) {
                     //This event means you need Vowel Combinations
 
                     k.codes[0] = independentVowels[keys.indexOf(k)];

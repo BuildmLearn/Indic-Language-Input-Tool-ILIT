@@ -2,8 +2,10 @@ package org.buildmlearn.indickeyboard;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
 import android.util.AttributeSet;
+import android.util.Log;
 
 
 public class CustomKeyboardView extends KeyboardView {
@@ -22,6 +24,15 @@ public class CustomKeyboardView extends KeyboardView {
         super.setPreviewEnabled(previewEnabled);
     }
 
+    @Override
+    public boolean onLongPress(Keyboard.Key key)
+    {
+            MainKeyboard mk=new MainKeyboard();
+            Log.d("check",mk.toString());
+           mk.onLongPress(key);
+            return super.onLongPress(key);
+
+        }
     @Override
     public void onDraw(Canvas canvas) {
               super.onDraw(canvas);
