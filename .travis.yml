@@ -1,4 +1,6 @@
-before_install: cd SourceCode/ILIT/AndroidApp/IndicKeyboard
+before_install: 
+    -cd SourceCode/ILIT/AndroidApp/IndicKeyboard
+    -chmod +x gradlew
 
 language: android
 
