@@ -1,3 +1,5 @@
+before_install: cd SourceCode/ILIT/AndroidApp/IndicKeyboard
+
 language: android
 
 jdk:
