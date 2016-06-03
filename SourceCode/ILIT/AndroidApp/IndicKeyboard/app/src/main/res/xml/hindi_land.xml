@@ -2,7 +2,7 @@
     android:keyWidth="10%p"
     android:horizontalGap="0px"
     android:verticalGap="0px"
-    android:keyHeight="7%p"
+    android:keyHeight="12%p"
     android:keyTextSize="20.0sp"
     android:labelTextSize="20.0sp"
     android:textStyle="bold"
@@ -72,10 +72,10 @@
         <Key android:codes="2359" android:keyLabel="ष "  android:keyEdgeFlags="left" />
         <Key android:codes="2360" android:keyLabel="स " />
         <Key android:codes="2361" android:keyLabel="ह " />
-        <Key android:codes="2325,2381,2359" android:keyLabel="क्ष "  />
-        <Key android:codes="2332,2381,2334" android:keyLabel="ज्ञ " />
-        <Key android:codes="2358,2381,2352" android:keyEdgeFlags="right" android:keyLabel="श्र " />
-        <Key android:codes="-5" android:keyIcon="@drawable/delete" android:horizontalGap="20%"
+        <Key android:codes="2325,2381,2359"  android:keyLabel=" क्ष "   />
+        <Key android:codes="2332,2381,2334" android:keyLabel=" ज्ञ " />
+        <Key android:codes="2358,2381,2352" android:keyEdgeFlags="right" android:keyLabel=" श्र "  android:horizontalGap="20%" />
+        <Key android:codes="-5" android:keyIcon="@drawable/delete"
             android:keyWidth="20%p" android:keyEdgeFlags="right" android:isRepeatable="true"/>
 
     </Row>
