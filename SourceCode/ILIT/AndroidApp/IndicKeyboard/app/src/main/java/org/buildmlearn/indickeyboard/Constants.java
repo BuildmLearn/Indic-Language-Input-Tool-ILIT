@@ -13,6 +13,10 @@ public class Constants {
     public static final int PHONEPAD =-89 ;
     public static final int main_to_extended_consonant = -94;
     public static final int extended_consonant_to_main=-93;
+    public static final int CurrentKeyboard_MAIN=0;
+    public static final int CurrentKeyboard_EXTENDED=1;
+    public static final int CurrentKeyboard_PHONEPAD=2;
+    public static final int CurrentKeyboard_SYMBOL=3;
 
 
 
