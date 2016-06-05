@@ -320,7 +320,7 @@ public class MainKeyboard extends InputMethodService
         first_consonant = (currentKeyboard == Constants.CurrentKeyboard_MAIN) ? LanguageUtilites.first(language) : LanguageUtilites.extendedFirst(language); //static right now. Would make it dynamic
 
 
-        int[] dependentVowels = LanguageUtilites.getDependentVowels(language, last_consonant_pressed, displayMode);
+        int[] dependentVowels = LanguageUtilites.getDependentVowels(language, displayMode);
         int[] independentVowels = LanguageUtilites.getIndependentVowels(language, displayMode);
 
 
@@ -331,7 +331,7 @@ public class MainKeyboard extends InputMethodService
         for (Keyboard.Key k : keys) {
 
 
-            if (k.codes[0] == first_consonant && keys.indexOf(k) != 0) {
+            if (k.codes[0] == first_consonant) {
                 //got all the top keys before the first consonant
                 //And the key is not the first one
                 break; //break the loop
@@ -401,7 +401,7 @@ public class MainKeyboard extends InputMethodService
      *
      * @return layout resource id of the keyboard view to be shown
      */
-    private int getKeyboardViewResourceId(boolean e) {
+    public int getKeyboardViewResourceId(boolean e) {
         String file = e ? (language + "_extended_consonants") : language;
         //boolean e shows extended Keyboard
 
