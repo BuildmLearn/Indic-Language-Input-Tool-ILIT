@@ -56,7 +56,7 @@
             android:keyLabel="ઓ" />
         <Key
             android:codes="2708"
-            android:keyLabel="ઔ"/>
+            android:keyLabel="ઔ" />
         <Key
             android:codes="2690"
             android:keyLabel="અં" />

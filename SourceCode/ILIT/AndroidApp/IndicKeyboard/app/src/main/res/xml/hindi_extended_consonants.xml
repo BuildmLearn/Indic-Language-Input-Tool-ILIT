@@ -1,63 +1,136 @@
 <Keyboard xmlns:android="http://schemas.android.com/apk/res/android"
-    android:keyWidth="20%p"
     android:horizontalGap="0px"
-    android:verticalGap="0px"
     android:keyHeight="7%p"
     android:keyTextSize="20.0sp"
+    android:keyWidth="20%p"
     android:labelTextSize="20.0sp"
     android:textStyle="bold"
+    android:verticalGap="0px"
 
     >
 
-    <Row android:keyWidth="13%p" android:rowEdgeFlags="top">
-        <Key android:codes="2309" android:keyLabel="अ "  android:keyEdgeFlags="left"/>
-        <Key android:codes="2310" android:keyLabel="आ "  />
-        <Key android:codes="2311" android:keyLabel="इ "  />
-        <Key android:codes="2312" android:keyLabel="ई "   />
-        <Key android:codes="2313" android:keyLabel="उ "   />
-        <Key android:codes="2314" android:keyLabel="ऊ "  android:horizontalGap="2%" />
-        <Key android:codes="-99" android:keyLabel="अ "
-            android:keyWidth="20%p"  android:keyEdgeFlags="right" android:keyTextSize="21.0sp"  android:labelTextSize="21.0sp"/>
+    <Row
+        android:keyWidth="13%p"
+        android:rowEdgeFlags="top">
+        <Key
+            android:codes="2309"
+            android:keyEdgeFlags="left"
+            android:keyLabel="अ " />
+        <Key
+            android:codes="2310"
+            android:keyLabel="आ " />
+        <Key
+            android:codes="2311"
+            android:keyLabel="इ " />
+        <Key
+            android:codes="2312"
+            android:keyLabel="ई " />
+        <Key
+            android:codes="2313"
+            android:keyLabel="उ " />
+        <Key
+            android:codes="2314"
+            android:horizontalGap="2%"
+            android:keyLabel="ऊ " />
+        <Key
+            android:codes="-99"
+            android:keyEdgeFlags="right"
+            android:keyLabel="अ "
+            android:keyTextSize="21.0sp"
+            android:keyWidth="20%p"
+            android:labelTextSize="21.0sp" />
     </Row>
 
-    <Row android:keyWidth="13%p" android:verticalGap="1%" >
-        <Key android:codes="2319" android:keyLabel="ए " android:keyEdgeFlags="left"/>
-        <Key android:codes="2320" android:keyLabel="ऐ " />
-        <Key android:codes="2323" android:keyLabel="ओ " />
-        <Key android:codes="2324" android:keyLabel="औ " />
-        <Key android:codes="2306" android:keyLabel="अं " />
-        <Key android:codes="2307" android:keyLabel="अ:" android:horizontalGap="2%" />
+    <Row
+        android:keyWidth="13%p"
+        android:verticalGap="1%">
+        <Key
+            android:codes="2319"
+            android:keyEdgeFlags="left"
+            android:keyLabel="ए " />
+        <Key
+            android:codes="2320"
+            android:keyLabel="ऐ " />
+        <Key
+            android:codes="2323"
+            android:keyLabel="ओ " />
+        <Key
+            android:codes="2324"
+            android:keyLabel="औ " />
+        <Key
+            android:codes="2306"
+            android:keyLabel="अं " />
+        <Key
+            android:codes="2307"
+            android:horizontalGap="2%"
+            android:keyLabel="अ:" />
 
-        <Key android:codes="-98" android:keyIcon="@drawable/sym_keyboard_next"
-            android:keyWidth="20%p" android:keyEdgeFlags="right" />
+        <Key
+            android:codes="-98"
+            android:keyEdgeFlags="right"
+            android:keyIcon="@drawable/sym_keyboard_next"
+            android:keyWidth="20%p" />
     </Row>
 
-<Row >
-    <Key android:codes="2358" android:keyLabel="श " android:keyEdgeFlags="left"/>
-    <Key android:codes="2359" android:keyLabel="ष " />
-    <Key android:codes="2360" android:keyLabel="स " />
-    <Key android:codes="2361" android:keyLabel="ह " />
-    <Key android:codes="2325,2381,2359" android:keyLabel="क्ष " android:keyEdgeFlags="right" />
+    <Row>
+        <Key
+            android:codes="2358"
+            android:keyEdgeFlags="left"
+            android:keyLabel="श " />
+        <Key
+            android:codes="2359"
+            android:keyLabel="ष " />
+        <Key
+            android:codes="2360"
+            android:keyLabel="स " />
+        <Key
+            android:codes="2361"
+            android:keyLabel="ह " />
+        <Key
+            android:codes="2325,2381,2359"
+            android:keyEdgeFlags="right"
+            android:keyLabel="क्ष " />
     </Row>
 
     <Row android:verticalGap="21%p">
-    <Key android:codes="2332,2381,2334" android:keyLabel="ज्ञ " android:keyEdgeFlags="left" />
-    <Key android:codes="2358,2381,2352" android:keyEdgeFlags="right" android:keyLabel="श्र " />
-           </Row>
+        <Key
+            android:codes="2332,2381,2334"
+            android:keyEdgeFlags="left"
+            android:keyLabel="ज्ञ " />
+        <Key
+            android:codes="2358,2381,2352"
+            android:keyEdgeFlags="right"
+            android:keyLabel="श्र " />
+    </Row>
     <Row>
-        <Key android:codes="-5" android:keyIcon="@drawable/delete"
-           android:horizontalGap="80%p" android:keyWidth="20%p" android:keyEdgeFlags="right" android:isRepeatable="true"/>
+        <Key
+            android:codes="-5"
+            android:horizontalGap="80%p"
+            android:isRepeatable="true"
+            android:keyEdgeFlags="right"
+            android:keyIcon="@drawable/delete"
+            android:keyWidth="20%p" />
     </Row>
     <Row android:rowEdgeFlags="bottom">
-        <Key android:codes="-97" android:keyLabel="/?!"
-            android:keyWidth="20%p" android:keyEdgeFlags="left"/>
-        <Key android:codes="32" android:keyIcon="@drawable/sym_keyboard_space"
-            android:keyWidth="40%p" />
-        <Key android:codes="124" android:keyLabel="|"
+        <Key
+            android:codes="-97"
+            android:keyEdgeFlags="left"
+            android:keyLabel="/?!"
             android:keyWidth="20%p" />
-    <Key android:codes="-93" android:keyIcon="@drawable/sym_keyboard_prev"
-        android:keyWidth="20%p" android:keyEdgeFlags="right"/>
+        <Key
+            android:codes="32"
+            android:keyIcon="@drawable/sym_keyboard_space"
+            android:keyWidth="40%p" />
+        <Key
+            android:codes="124"
+            android:keyLabel="|"
+            android:keyWidth="20%p" />
+        <Key
+            android:codes="-93"
+            android:keyEdgeFlags="right"
+            android:keyIcon="@drawable/sym_keyboard_prev"
+            android:keyWidth="20%p" />
 
-</Row>
+    </Row>
 
-    </Keyboard>
+</Keyboard>
