@@ -1,0 +1,227 @@
+<Keyboard xmlns:android="http://schemas.android.com/apk/res/android"
+    android:horizontalGap="0px"
+    android:keyHeight="12%p"
+    android:keyTextSize="20.0sp"
+    android:keyWidth="10%p"
+    android:labelTextSize="20.0sp"
+    android:textStyle="bold"
+    android:verticalGap="0px"
+
+    >
+
+    <Row
+        android:keyWidth="6.6%p"
+        android:rowEdgeFlags="top"
+        android:verticalGap="1%">
+        <Key
+            android:codes="2693"
+            android:keyEdgeFlags="left"
+            android:keyLabel="અ" />
+        <Key
+            android:codes="2694"
+            android:keyLabel="આ" />
+        <Key
+            android:codes="2695"
+            android:keyLabel="ઇ" />
+        <Key
+            android:codes="2696"
+            android:keyLabel="ઈ" />
+
+        <Key
+            android:codes="2697"
+            android:keyLabel="ઉ" />
+
+        <Key
+            android:codes="2698"
+            android:keyLabel="ઊ" />
+        <Key
+            android:codes="2703"
+            android:keyEdgeFlags="left"
+            android:keyLabel="એ" />
+        <Key
+            android:codes="2704"
+            android:keyLabel="ઐ" />
+        <Key
+            android:codes="2707"
+            android:keyLabel="ઓ" />
+        <Key
+            android:codes="2708"
+            android:keyLabel="ઔ" />
+        <Key
+            android:codes="2690"
+            android:keyLabel="અં" />
+        <Key
+            android:codes="2691"
+            android:keyLabel="અઃ" />
+
+        <Key
+            android:codes="-99"
+            android:keyLabel="અ "
+            android:keyTextSize="21.0sp"
+            android:keyWidth="10%p"
+            android:labelTextSize="21.0sp" />
+        <Key
+            android:codes="-98"
+            android:keyEdgeFlags="right"
+            android:keyIcon="@drawable/sym_keyboard_next"
+            android:keyWidth="10%p" />
+    </Row>
+
+
+    <Row>
+
+        <Key
+            android:codes="2709"
+            android:keyEdgeFlags="left"
+            android:keyLabel="ક" />
+        <Key
+            android:codes="2710"
+            android:keyLabel="ખ" />
+        <Key
+            android:codes="2711"
+            android:keyLabel="ગ" />
+        <Key
+            android:codes="2712"
+            android:keyLabel="ઘ" />
+        <Key
+            android:codes="2713"
+            android:keyLabel="ઙ" />
+
+        <Key
+            android:codes="2714"
+            android:keyLabel="ચ" />
+        <Key
+            android:codes="2715"
+            android:keyLabel="છ" />
+        <Key
+            android:codes="2716"
+            android:keyLabel="જ" />
+        <Key
+            android:codes="2717"
+            android:keyLabel="ઝ" />
+        <Key
+            android:codes="2718"
+            android:keyLabel="ઞ" />
+
+    </Row>
+    <Row>
+        <Key
+            android:codes="2719"
+            android:keyLabel="ટ" />
+        <Key
+            android:codes="2720"
+            android:keyLabel="ઠ" />
+        <Key
+            android:codes="2721"
+            android:keyLabel="ડ" />
+        <Key
+            android:codes="2722"
+            android:keyLabel="ઢ" />
+        <Key
+            android:codes="2723"
+            android:keyLabel="ણ" />
+        <Key
+            android:codes="2724"
+            android:keyLabel="ત" />
+        <Key
+            android:codes="2725"
+            android:keyLabel="થ" />
+        <Key
+            android:codes="2726"
+            android:keyLabel="દ" />
+        <Key
+            android:codes="2727"
+            android:keyLabel="ધ" />
+        <Key
+            android:codes="2728"
+            android:keyLabel="ન" />
+
+    </Row>
+    <Row>
+        <Key
+            android:codes="2730"
+            android:keyLabel="પ" />
+        <Key
+            android:codes="2731"
+            android:keyLabel="ફ" />
+        <Key
+            android:codes="2732"
+            android:keyLabel="બ" />
+        <Key
+            android:codes="2733"
+            android:keyLabel="ભ" />
+        <Key
+            android:codes="2734"
+            android:keyLabel="મ" />
+
+        <Key
+            android:codes="2735"
+            android:keyLabel="ય" />
+
+        <Key
+            android:codes="2736"
+            android:keyLabel="ર" />
+        <Key
+            android:codes="2738"
+            android:keyLabel="લ" />
+        <Key
+            android:codes="2741"
+            android:keyLabel="વ" />
+        <Key
+            android:codes="2742"
+            android:keyLabel="શ" />
+
+    </Row>
+    <Row>
+        <Key
+            android:codes="2743"
+            android:keyLabel="ષ" />
+        <Key
+            android:codes="2744"
+            android:keyLabel="સ" />
+        <Key
+            android:codes="2745"
+            android:keyLabel="હ" />
+
+
+        <Key
+            android:codes="2742,2765,2352"
+            android:keyLabel="શ્ર " />
+        <Key
+            android:codes=" 2709 ,2765 , 2743"
+            android:keyLabel="ક્ષ" />
+        <Key
+            android:codes="2716 ,2765 ,2718 ,"
+            android:keyLabel="જ્ઞ" />
+        <Key
+            android:codes="-5"
+            android:isRepeatable="true"
+            android:keyEdgeFlags="right"
+            android:keyIcon="@drawable/delete"
+            android:keyWidth="20%p" />
+
+    </Row>
+
+    <Row android:rowEdgeFlags="bottom">
+        <Key
+            android:codes="-97"
+            android:keyEdgeFlags="left"
+            android:keyLabel="/?!"
+            android:keyWidth="20%p" />
+        <Key
+            android:codes="32"
+            android:keyIcon="@drawable/sym_keyboard_space"
+            android:keyWidth="40%p" />
+        <Key
+            android:codes="124"
+            android:keyLabel="| "
+            android:keyWidth="20%p" />
+        <Key
+            android:codes="-94"
+            android:keyEdgeFlags="right"
+            android:keyIcon="@drawable/sym_keyboard_next"
+            android:keyWidth="20%p" />
+
+    </Row>
+
+</Keyboard>
