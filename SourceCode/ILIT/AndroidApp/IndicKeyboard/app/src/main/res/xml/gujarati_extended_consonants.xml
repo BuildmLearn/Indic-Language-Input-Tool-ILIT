@@ -29,7 +29,8 @@
             android:keyLabel="ઉ" />
         <Key
             android:codes="2698"
-            android:keyLabel="ઊ" />
+            android:keyLabel="ઊ"
+            android:horizontalGap="2%"/>
         <Key
             android:codes="-99"
             android:keyEdgeFlags="right"
@@ -61,6 +62,7 @@
             android:keyLabel="અં" />
         <Key
             android:codes="2693,2691"
+            android:horizontalGap="2%"
             android:keyLabel="અઃ" />
         <Key
             android:codes="-98"

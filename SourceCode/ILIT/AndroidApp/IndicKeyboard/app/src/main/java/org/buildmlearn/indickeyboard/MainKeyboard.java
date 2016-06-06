@@ -59,19 +59,20 @@ public class MainKeyboard extends InputMethodService
     public View onCreateInputView() {
         //detect the orientation
         detectDisplayMode();
-        language = "hindi"; //static right now. Later SharedPref
+
+        //Gets the language at run time from the choosen InputMethodSubtype
+        language=mInputMethodManager.getCurrentInputMethodSubtype().getLocale();
         kv = (CustomKeyboardView) getLayoutInflater().inflate(R.layout.mainkeyboard, null);
+
+        //Here is the main keyboard
         keyboard = new Keyboard(this, getKeyboardViewResourceId(false));
-        //Not all Languages, in all the Orientations will have extended keyboard.
-        int extKbd = getKeyboardViewResourceId(true);
-        if (extKbd == 0) {
-            //no layout found for extended keyboard.
-            extendedKeyboard = keyboard;
-        } else {
-            extendedKeyboard = new Keyboard(this, extKbd);
-        }
-        phonepad = new Keyboard(this, getResourceId("phonepad"));
-        symbols = new Keyboard(this, getResourceId("symbols"));
+
+        //Create other keyboard layouts as well.
+        //these will take appropriate layout and language and then generate the layout
+
+        extendedKeyboard= getKeyboardFromRes(getKeyboardViewResourceId(true));
+        phonepad= getKeyboardFromRes(getResourceId("phonepad"));
+        symbols=getKeyboardFromRes(getResourceId("symbols"));
         kv.setProximityCorrectionEnabled(false);
         kv.setKeyboard(keyboard);
         kv.setOnKeyboardActionListener(this);
@@ -112,6 +113,15 @@ public class MainKeyboard extends InputMethodService
 
         }
 
+    }
+
+    private Keyboard getKeyboardFromRes(int resourceId)
+    {
+        if(resourceId!=0)
+        {
+            return new Keyboard(this,resourceId);
+        }
+        return keyboard; //keyboard shows the main keyboard. and it should be existing for other layouts to exist.
     }
 
     @Override
@@ -268,10 +278,10 @@ public class MainKeyboard extends InputMethodService
 
                      */
                 if (LanguageUtilites.IsDependentVowel(primaryCode, language)) {
+                    int pre=LanguageUtilites.IndependentPretext(primaryCode,language);
+                    if (pre!=-1 && currentViewHasVowel) {
 
-                    if ((primaryCode == 2306 || primaryCode == 2307) && currentViewHasVowel) {
-
-                        ic.commitText(String.valueOf((char) 2309), 1); //Add Devnagari A
+                        ic.commitText(String.valueOf((char) pre), 1);
 
                     }
                     boolean dontaddprevious = currentEventTriggered == Constants.adaptive_consonantFillsCombinations;
@@ -352,7 +362,7 @@ public class MainKeyboard extends InputMethodService
                 if (currentViewHasVowel) {
                     k.codes[0] = Constants.adaptive_vowel_to_consonantCombinations; //change the code of the key
                     k.icon = null; //remove the icon here
-                    k.label = "अ "; //set the new label
+                    k.label = String.valueOf((char)independentVowels[0]); //set the new label
                 }
 
             }
@@ -378,9 +388,11 @@ public class MainKeyboard extends InputMethodService
                     //This event means you need Vowel Combinations
 
                     k.codes[0] = independentVowels[keys.indexOf(k)];
-                    if (k.codes[0] == 2306 || k.codes[0] == 2307) {
+                    //this if this independentVowel needs pretext
+                    int t=LanguageUtilites.IndependentPretext(k.codes[0],language);
+                    if (t!=-1) {
                         //Add additional Devanagari AA
-                        k.label = String.valueOf((char) 2309) + String.valueOf((char) k.codes[0]);
+                        k.label = String.valueOf((char) t) + String.valueOf((char) k.codes[0]);
                     } else {
                         //Other keys. Simply create the label from the codes
                         k.label = String.valueOf((char) k.codes[0]) + " ";

@@ -192,7 +192,8 @@
             android:keyLabel="ક્ષ" />
         <Key
             android:codes="2716 ,2765 ,2718 ,"
-            android:keyLabel="જ્ઞ" />
+            android:keyLabel="જ્ઞ"
+            android:horizontalGap="20%p"/> 
         <Key
             android:codes="-5"
             android:isRepeatable="true"
