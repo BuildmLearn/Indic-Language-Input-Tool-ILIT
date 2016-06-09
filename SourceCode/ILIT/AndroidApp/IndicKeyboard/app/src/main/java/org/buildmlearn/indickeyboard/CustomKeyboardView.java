@@ -2,10 +2,15 @@ package org.buildmlearn.indickeyboard;
 
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
 import android.util.AttributeSet;
 import android.util.Log;
+
+import java.util.List;
 
 
 public class CustomKeyboardView extends KeyboardView {
@@ -25,17 +30,25 @@ public class CustomKeyboardView extends KeyboardView {
     }
 
     @Override
-    public boolean onLongPress(Keyboard.Key key)
-    {
-            MainKeyboard mk=new MainKeyboard();
-            Log.d("check",mk.toString());
-           mk.onLongPress(key);
-            return super.onLongPress(key);
+    public boolean onLongPress(Keyboard.Key key) {
+        MainKeyboard mk = new MainKeyboard();
+        Log.d("check", mk.toString());
+        mk.onLongPress(key);
+        return super.onLongPress(key);
 
-        }
+    }
+
     @Override
     public void onDraw(Canvas canvas) {
-              super.onDraw(canvas);
+        Drawable dr = new ColorDrawable(Color.BLUE);
+        dr.setAlpha(30);
+        super.onDraw(canvas);
+        List<Keyboard.Key> keys = getKeyboard().getKeys();
+        for (Keyboard.Key key : keys) {
+            dr.setBounds(key.x, key.y, key.x + key.width, key.y + key.height);
+            dr.draw(canvas);
+
+            }
 
 
         /* For themes
@@ -63,5 +76,6 @@ public class CustomKeyboardView extends KeyboardView {
         }
 */
 
+        }
     }
-}
+
