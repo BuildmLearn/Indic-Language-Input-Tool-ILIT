@@ -61,7 +61,14 @@ public class MainKeyboard extends InputMethodService
         detectDisplayMode();
 
         //Gets the language at run time from the choosen InputMethodSubtype
-        language=mInputMethodManager.getCurrentInputMethodSubtype().getLocale();
+        language=mInputMethodManager.getCurrentInputMethodSubtype().getLocale().toLowerCase();
+        Log.d("locale ",language);
+        if( language!="gujarati" || language!="hindi")
+        {
+            language="hindi"; //default
+
+        }
+
         kv = (CustomKeyboardView) getLayoutInflater().inflate(R.layout.mainkeyboard, null);
 
         //Here is the main keyboard
@@ -250,6 +257,15 @@ public class MainKeyboard extends InputMethodService
                 kv.invalidateAllKeys();
                 break;
 
+            case Constants.extended_adaptive:
+                changeAdaptive(Constants.extended_adaptive);
+                kv.invalidateAllKeys();
+                break;
+
+            case Constants.main_adaptive:
+                changeAdaptive(Constants.main_adaptive);
+                kv.invalidateAllKeys();
+                break;
 
             default:
 
@@ -323,16 +339,23 @@ public class MainKeyboard extends InputMethodService
 
      */
     public void changeAdaptive(int eventcode) {
-
+        int[] dependentVowels;
+        int[] independentVowels;
 
         currentEventTriggered = eventcode; //Set the Event
 
-        first_consonant = (currentKeyboard == Constants.CurrentKeyboard_MAIN) ? LanguageUtilites.first(language) : LanguageUtilites.extendedFirst(language); //static right now. Would make it dynamic
+        first_consonant = (currentKeyboard == Constants.CurrentKeyboard_MAIN) ? LanguageUtilites.first(language) : LanguageUtilites.extendedFirst(language);
 
-
-        int[] dependentVowels = LanguageUtilites.getDependentVowels(language, displayMode);
-        int[] independentVowels = LanguageUtilites.getIndependentVowels(language, displayMode);
-
+        if(currentEventTriggered==Constants.extended_adaptive)
+        {   //Extended is needed
+            dependentVowels=LanguageUtilites.getDependentVowelsExtended(language,displayMode);
+            independentVowels=LanguageUtilites.getIndependentVowelsExtended(language,displayMode);
+        }
+        else {
+            //In all remaining events, the basic
+            dependentVowels = LanguageUtilites.getDependentVowels(language, displayMode);
+            independentVowels = LanguageUtilites.getIndependentVowels(language, displayMode);
+        }
 
         //Get all the Keys of the keyboard. No other option!
         ArrayList<Keyboard.Key> keys = (ArrayList<Keyboard.Key>) kv.getKeyboard().getKeys();
@@ -368,12 +391,27 @@ public class MainKeyboard extends InputMethodService
             }
             //event : Forward Arrow pressed in the Adaptive Area
 
-            else if (k.codes[0] == Constants.extended_adaptive) {
+            else if (k.codes[0] == Constants.extended_adaptive ) {
+                    if(eventcode==Constants.extended_adaptive) {
+                        k.codes[0] = Constants.main_adaptive;
+                        k.icon = ContextCompat.getDrawable(getApplicationContext(), R.drawable.sym_keyboard_prev);
+                    }
                 //To DO
-            } else {
+            }
+
+            else if(k.codes[0]==Constants.main_adaptive ) {
+                if (eventcode == Constants.main_adaptive) {
+                    k.codes[0] = Constants.extended_adaptive;
+                    k.icon = ContextCompat.getDrawable(getApplicationContext(), R.drawable.sym_keyboard_next);
+                }
+            }
+
+
+
+            else {
 
                 if (eventcode == Constants.adaptive_consonantFillsCombinations || eventcode == Constants.adaptive_vowel_to_consonantCombinations ||
-                        ((eventcode == Constants.main_to_extended_consonant || eventcode == -90 || eventcode == Constants.extended_consonant_to_main || eventcode == -110) && !currentViewHasVowel)) {
+                        ((eventcode == Constants.main_to_extended_consonant ||eventcode==Constants.main_adaptive||eventcode==Constants.extended_adaptive || eventcode == -90 || eventcode == Constants.extended_consonant_to_main || eventcode == -110) && !currentViewHasVowel)) {
                     //These events will mean that you need barakhdi in the Adaptive Area.
 
                     k.codes[0] = dependentVowels[keys.indexOf(k)]; //Get the Dependent Vowels
@@ -384,7 +422,7 @@ public class MainKeyboard extends InputMethodService
                         k.label = k.label + " ";
                     }
 
-                } else if (eventcode == Constants.adaptive_consonantCombinations_to_vowel || ((eventcode == Constants.main_to_extended_consonant || eventcode == Constants.extended_consonant_to_main) && currentViewHasVowel)) {
+                } else if (eventcode == Constants.adaptive_consonantCombinations_to_vowel || ((eventcode == Constants.main_to_extended_consonant || eventcode==Constants.main_adaptive|| eventcode == Constants.extended_consonant_to_main || eventcode==Constants.extended_adaptive) && currentViewHasVowel)) {
                     //This event means you need Vowel Combinations
 
                     k.codes[0] = independentVowels[keys.indexOf(k)];
@@ -398,8 +436,14 @@ public class MainKeyboard extends InputMethodService
                         k.label = String.valueOf((char) k.codes[0]) + " ";
                     }
 
-                } else {
-                    //when in case to add further events
+                }
+
+                if(k.codes[0]==0)
+                {
+                    //Empty Keys
+                    k.label=null;
+                    k.icon=null;
+
                 }
             }
 

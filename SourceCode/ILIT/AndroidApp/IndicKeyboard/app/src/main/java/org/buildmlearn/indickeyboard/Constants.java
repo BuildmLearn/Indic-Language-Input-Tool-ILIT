@@ -4,6 +4,7 @@ public class Constants {
 
     public static final int SPACE_KEY = 32;
     public static final int DELIMITER_KEY =124 ;
+    public static final int main_adaptive=-103;
     public static final int adaptive_dependent=-102;
     public static final int adaptive_consonantFillsCombinations=-101;
     public static final int adaptive_consonantCombinations_to_vowel=-100;

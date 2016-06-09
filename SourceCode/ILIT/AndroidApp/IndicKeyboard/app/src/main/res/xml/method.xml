@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <input-method xmlns:android="http://schemas.android.com/apk/res/android">
     <subtype
-        android:imeSubtypeLocale="hindi"
+        android:imeSubtypeLocale="hi-rIN"
         android:imeSubtypeMode="keyboard"
         android:label="BuildmLearn"
         android:imeSubtypeExtraValue="language=hindi" />
     <subtype
-        android:imeSubtypeLocale="gujarati"
+        android:imeSubtypeLocale="gu-rIN"
         android:imeSubtypeMode="keyboard"
         android:label="BuildmLearn"
         android:imeSubtypeExtraValue="language=gujarati"/>
