@@ -2,10 +2,12 @@ package org.buildmlearn.indickeyboard;
 
 public class LanguageUtilites {
     private static final int hindi_firstConsonant = 2325;
+    private static final int hindi_firstDigit = 2406;
     private static final int hindi_firstExtendedConsonant = 2358;
     private static int[] hindi_dependentVowels= new int[]{2381, 2366, 2367, 2368, 2369, 2370,2375, 2376, 2379, 2380, 2306, 2307,2305,2364,2373,2374,2377,2378,2402,2403 };
     private static int[] hindi_independentVowels = new int[]{2309, 2310, 2311, 2312, 2313, 2314,2319, 2320, 2323, 2324, 2306, 2307,2305,2308, 2365, 2315,2316,2318,2321,2322,2355,2356,2400,2401,2384 };
     private static final int gujarati_firstConsonant = 2709;
+    private static final int gujarati_firstDigit = 2790;
     private static final int gujarati_firstExtendedConsonant = 2742;
     private static int[] gujarati_dependentVowels= new int[]{2765,2750,2751,2752,2753,2754, 2759 ,2760, 2763, 2764, 2690, 2691,	2689, 2748, 2755,2756,	2757,	2761,2786,2786 };
     private static int[] gujarati_independentVowels = new int[]{2693, 2694, 2695, 2696,2697, 2698,2703, 2704, 2707,2708, 2690, 2691, 2749,2699,2700,2784,2785,2801,2768 };
@@ -19,6 +21,19 @@ public class LanguageUtilites {
 
         else if (language == "gujarati") {
             return gujarati_firstConsonant;
+        }
+
+
+        return 0;
+    }
+
+    public static int firstDigit(String language) {
+        if (language == "hindi") {
+            return hindi_firstDigit;
+        }
+
+        else if (language == "gujarati") {
+            return gujarati_firstDigit;
         }
 
 
