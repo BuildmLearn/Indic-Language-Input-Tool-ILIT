@@ -18,6 +18,9 @@ public class Constants {
     public static final int CurrentKeyboard_EXTENDED=1;
     public static final int CurrentKeyboard_PHONEPAD=2;
     public static final int CurrentKeyboard_SYMBOL=3;
+    public static final int KEYCODE_OPTIONS = -100;
+    public static final int KEYCODE_LANGUAGE_SWITCH = -101;
+
 
 
 
