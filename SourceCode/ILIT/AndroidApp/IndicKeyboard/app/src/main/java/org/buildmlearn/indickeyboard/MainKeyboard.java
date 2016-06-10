@@ -201,12 +201,14 @@ if(kv!=null)    {kv.setSubtypeOnSpaceKey(subtype);}
 
             case Constants.SYMBOL:
                 kv.setKeyboard(symbols);
+                updateDigits(language);
                 currentKeyboard = Constants.CurrentKeyboard_SYMBOL;
                 currentEventTriggered = Constants.SYMBOL;
                 break;
 
             case Constants.PHONEPAD:
                 kv.setKeyboard(phonepad);
+                updateDigits(language);
                 currentKeyboard = Constants.CurrentKeyboard_PHONEPAD;
                 currentEventTriggered = Constants.PHONEPAD;
                 break;
@@ -461,6 +463,31 @@ if(kv!=null)    {kv.setSubtypeOnSpaceKey(subtype);}
 
     }
 
+    public void updateDigits(String language)
+    {
+        int startDigit=LanguageUtilites.firstDigit(language);
+        ArrayList<Keyboard.Key> keys = (ArrayList<Keyboard.Key>) kv.getKeyboard().getKeys();
+
+        for(Keyboard.Key k:keys)
+        {
+            if(k.codes[0]>=0 && k.codes[0]<=9)
+            {
+                //got the digit keys
+                //update the key
+
+                k.codes[0]+=startDigit; //add to original code
+                //update the keys labels
+
+                k.label=String.valueOf((char)k.codes[0])+ " ";
+
+            }
+        }
+
+
+
+
+    }
+
 
     /**
      * Generates the layout resource id for the keyboard view based on the displayMode and current language
@@ -480,14 +507,16 @@ if(kv!=null)    {kv.setSubtypeOnSpaceKey(subtype);}
     }
 
     /**
-     * Gets the layout file resource id of the keyboard based on displayMode and languageName
+     * Gets the layout file resource id of the keyboard based on
      * @param layoutFile	layout of the keyboard whose resource id is to be returned
      * @return Resource id of the layout file of the keyboard to be shown
+     *
+     * IMP: These remain same for all languages : Hindi,Gujarati...
      */
     public int getResourceId(String layoutFile) {
         int resourceId = 0;
         resourceId = getResources().getIdentifier(
-                 layoutFile+ "_" +language, "xml",
+                 layoutFile, "xml",
                 getPackageName());
         return resourceId;
     }
