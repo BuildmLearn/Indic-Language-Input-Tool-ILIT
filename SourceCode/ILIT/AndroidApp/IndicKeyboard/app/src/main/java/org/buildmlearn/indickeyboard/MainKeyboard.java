@@ -12,6 +12,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
+import android.view.inputmethod.InputMethodSubtype;
 
 import java.util.ArrayList;
 
@@ -19,11 +20,11 @@ public class MainKeyboard extends InputMethodService
         implements KeyboardView.OnKeyboardActionListener {
 
 
-    private KeyboardView kv; //KeyboardView
-    private Keyboard keyboard; //main keyboard
-    private Keyboard extendedKeyboard; //extended keyboard
-    private Keyboard phonepad; //Phone pad keyboard for Numeric Enteries only
-    private Keyboard symbols; //Symbolic Keyboard
+    private CustomKeyboardView kv; //KeyboardView
+    private LatinKeyboard keyboard; //main keyboard
+    private LatinKeyboard extendedKeyboard; //extended keyboard
+    private LatinKeyboard phonepad; //Phone pad keyboard for Numeric Enteries only
+    private LatinKeyboard symbols; //Symbolic Keyboard
     private InputMethodManager mInputMethodManager; //InputMethodManager which will handle sub-ime and subtype Language method picker
     private InputConnection ic; //InputConnection
     private String language; //current language of the keyboard
@@ -31,6 +32,7 @@ public class MainKeyboard extends InputMethodService
     private boolean caps = false; //caps lock key
     public static int first_consonant; //first consonant of the language
     public static boolean currentViewHasVowel = true; //Does the view has Vowel or Consonant Combinations in the adaptive area
+    public static boolean currentAdaptive=true;//true if it has main else false-extended mode active
     public static int currentEventTriggered;//maintains current event triggered to use them further for appropriate reactions to the event.
     private static boolean changeLanguage; //Is the language changed? by InputMethodManager
     public int currentKeyboard = Constants.CurrentKeyboard_MAIN; //which is the currentKeyboard
@@ -61,25 +63,22 @@ public class MainKeyboard extends InputMethodService
         detectDisplayMode();
 
         //Gets the language at run time from the choosen InputMethodSubtype
-        language=mInputMethodManager.getCurrentInputMethodSubtype().getLocale().toLowerCase();
-        Log.d("locale ",language);
-        if( language!="gujarati" || language!="hindi")
-        {
-            language="hindi"; //default
+        String code=mInputMethodManager.getCurrentInputMethodSubtype().getLocale();
+        language=ImeUtilities.getLanguage(code);
+        Log.d("lan",code+" "+ language);
 
-        }
 
         kv = (CustomKeyboardView) getLayoutInflater().inflate(R.layout.mainkeyboard, null);
 
         //Here is the main keyboard
-        keyboard = new Keyboard(this, getKeyboardViewResourceId(false));
+        keyboard = new LatinKeyboard(this, getKeyboardViewResourceId(false));
 
         //Create other keyboard layouts as well.
         //these will take appropriate layout and language and then generate the layout
 
         extendedKeyboard= getKeyboardFromRes(getKeyboardViewResourceId(true));
         phonepad= getKeyboardFromRes(getResourceId("phonepad"));
-        symbols=getKeyboardFromRes(getResourceId("symbols"));
+        symbols= getKeyboardFromRes(getResourceId("symbols"));
         kv.setProximityCorrectionEnabled(false);
         kv.setKeyboard(keyboard);
         kv.setOnKeyboardActionListener(this);
@@ -90,6 +89,15 @@ public class MainKeyboard extends InputMethodService
         }
         return kv;
     }
+
+    @Override
+    public void onCurrentInputMethodSubtypeChanged(InputMethodSubtype subtype) {
+
+if(kv!=null)    {kv.setSubtypeOnSpaceKey(subtype);}
+        setInputView(onCreateInputView());
+
+    }
+
 
     private void playClick(int keyCode) {
         AudioManager am = (AudioManager) getSystemService(AUDIO_SERVICE);
@@ -122,11 +130,11 @@ public class MainKeyboard extends InputMethodService
 
     }
 
-    private Keyboard getKeyboardFromRes(int resourceId)
+    private LatinKeyboard getKeyboardFromRes(int resourceId)
     {
         if(resourceId!=0)
         {
-            return new Keyboard(this,resourceId);
+            return new LatinKeyboard(this,resourceId);
         }
         return keyboard; //keyboard shows the main keyboard. and it should be existing for other layouts to exist.
     }
@@ -258,11 +266,13 @@ public class MainKeyboard extends InputMethodService
                 break;
 
             case Constants.extended_adaptive:
+                currentAdaptive=false;
                 changeAdaptive(Constants.extended_adaptive);
                 kv.invalidateAllKeys();
                 break;
 
             case Constants.main_adaptive:
+                currentAdaptive=true;
                 changeAdaptive(Constants.main_adaptive);
                 kv.invalidateAllKeys();
                 break;
@@ -346,7 +356,7 @@ public class MainKeyboard extends InputMethodService
 
         first_consonant = (currentKeyboard == Constants.CurrentKeyboard_MAIN) ? LanguageUtilites.first(language) : LanguageUtilites.extendedFirst(language);
 
-        if(currentEventTriggered==Constants.extended_adaptive)
+        if(!currentAdaptive)
         {   //Extended is needed
             dependentVowels=LanguageUtilites.getDependentVowelsExtended(language,displayMode);
             independentVowels=LanguageUtilites.getIndependentVowelsExtended(language,displayMode);
