@@ -57,4 +57,23 @@
     <string name="do_you_like">Liked ILIT?</string>
     <string name="rate_us">Rate us on Google Play Store.</string>
 
+    <!-- Titles for ImePreference -->
+    <string name="settings_name">ILIT Keyboard Settings</string>
+    <string name="language_selection_title">Input languages</string>
+    <string name="select_language">Select input languages</string>
+    <string name="general_category">General</string>
+
+    <!-- Labels on soft keys -->
+    <string name="label_go_key">Go</string>
+    <string name="label_next_key">Next</string>
+    <string name="label_send_key">Send</string>
+
+    <!-- Labels for subtype -->
+    <string name="label_subtype_generic">%s</string>
+    <string name="label_subtype_hi_IN">हिन्दी(Hindi)</string>
+    <string name="label_subtype_gu_IN">ગુજરાતી(Gujarati)</string>
+    <string name="label_subtype_en_GB">English (GB)</string>
+
+
+
 </resources>
