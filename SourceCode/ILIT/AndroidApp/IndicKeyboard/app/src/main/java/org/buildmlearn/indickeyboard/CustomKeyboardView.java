@@ -7,8 +7,10 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
+import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.inputmethod.InputMethodSubtype;
 
 import java.util.List;
 
@@ -36,6 +38,12 @@ public class CustomKeyboardView extends KeyboardView {
         mk.onLongPress(key);
         return super.onLongPress(key);
 
+    }
+
+    void setSubtypeOnSpaceKey(final InputMethodSubtype subtype) {
+        final LatinKeyboard keyboard = (LatinKeyboard)getKeyboard();
+        keyboard.setSpaceIcon(ContextCompat.getDrawable(getContext(),subtype.getIconResId()));
+        invalidateAllKeys();
     }
 
     @Override
