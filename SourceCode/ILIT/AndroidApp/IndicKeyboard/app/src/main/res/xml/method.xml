@@ -1,13 +1,17 @@
-<?xml version="1.0" encoding="utf-8"?>
-<input-method xmlns:android="http://schemas.android.com/apk/res/android">
+<input-method xmlns:android="http://schemas.android.com/apk/res/android"
+    android:settingsActivity="org.buildmlearn.indickeyboard.ImePreferences"
+
+    android:supportsSwitchingToNextInputMethod="true"
+    >
+
     <subtype
-        android:imeSubtypeLocale="hi-rIN"
-        android:imeSubtypeMode="keyboard"
-        android:label="BuildmLearn"
-        android:imeSubtypeExtraValue="language=hindi" />
+        android:label="@string/label_subtype_hi_IN"
+        android:icon="@drawable/icon_hi_in"
+        android:imeSubtypeLocale="hi_IN"
+        android:imeSubtypeMode="keyboard" />
     <subtype
-        android:imeSubtypeLocale="gu-rIN"
-        android:imeSubtypeMode="keyboard"
-        android:label="BuildmLearn"
-        android:imeSubtypeExtraValue="language=gujarati"/>
+        android:label="@string/label_subtype_gu_IN"
+        android:icon="@drawable/icon_gu_in"
+        android:imeSubtypeLocale="gu_IN"
+        android:imeSubtypeMode="keyboard" />
 </input-method>
