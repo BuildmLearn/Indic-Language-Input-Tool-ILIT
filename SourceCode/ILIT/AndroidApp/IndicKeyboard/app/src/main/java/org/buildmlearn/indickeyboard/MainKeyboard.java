@@ -69,8 +69,7 @@ public class MainKeyboard extends InputMethodService
         initializeLanguage();//Gets the language at run time from the choosen InputMethodSubtype & sets it to language varible
         setMainKeyboardView();//create the mainkeyboard view and set it to keybaordview kv
         createKeyboards();//create main,extended,symbol and phonepad layouts
-    //    keyboard=getCurrentKeyboard();
-        keyboard=mainKeyboard;
+        keyboard=getCurrentKeyboard();
         kv.setProximityCorrectionEnabled(false);
         kv.setKeyboard(keyboard);
         kv.setOnKeyboardActionListener(this);
@@ -82,7 +81,6 @@ public class MainKeyboard extends InputMethodService
     private LatinKeyboard getCurrentKeyboard()
     {
         LatinKeyboard keybd;
-
         switch(currentKeyboard)
         {
             case Constants.CurrentKeyboard_EXTENDED:
@@ -99,7 +97,10 @@ public class MainKeyboard extends InputMethodService
                 keybd=mainKeyboard;
                 break;
         }
-
+        if(keybd==mainKeyboard) //i.e either the resource was not there or it was default
+        {
+            currentKeyboard=Constants.CurrentKeyboard_MAIN;
+        }
         return keybd;
 
 
@@ -107,7 +108,7 @@ public class MainKeyboard extends InputMethodService
     }
 
     private void checkForOrientationAdaptiveCorrection() {
-        if (last_consonant_pressed != 0 && currentKeyboard == Constants.CurrentKeyboard_MAIN) {
+        if (last_consonant_pressed != 0 && (currentKeyboard == Constants.CurrentKeyboard_MAIN || currentKeyboard==Constants.CurrentKeyboard_EXTENDED)) {
 
             /*  That means it came here after orientation changes
             Now we are gonna fire changeAdaptive because we want the user to have barakhdi
@@ -220,7 +221,6 @@ public class MainKeyboard extends InputMethodService
 
     @Override
     public void onKey(int primaryCode, int[] keyCodes) {
-
         ic = getCurrentInputConnection();
         playClick(primaryCode);
         switch (primaryCode) {
@@ -438,7 +438,6 @@ public class MainKeyboard extends InputMethodService
         currentEventTriggered = eventcode; //Set the Event
 
         first_consonant = (currentKeyboard == Constants.CurrentKeyboard_MAIN) ? LanguageUtilites.first(language) : LanguageUtilites.extendedFirst(language);
-
         if (!currentAdaptive) {   //Extended is needed
             dependentVowels = LanguageUtilites.getDependentVowelsExtended(language, displayMode);
             independentVowels = LanguageUtilites.getIndependentVowelsExtended(language, displayMode);
