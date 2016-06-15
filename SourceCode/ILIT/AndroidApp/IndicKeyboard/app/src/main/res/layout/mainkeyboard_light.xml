@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<org.buildmlearn.indickeyboard.CustomKeyboardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:andriod="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/keyboardview"
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content"
+    android:layout_alignParentBottom="true"
+    android:layout_centerHorizontal="true"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:keyTextColor="#37474F"
+    android:visibility="visible"
+    android:keyTextSize="20.0sp"
+    android:labelTextSize="20.0sp"
+    android:keyBackground="@drawable/keyboard_background_lxx_light"
+
+    android:background="@drawable/keyboard_background_lxx_light"
+
+    android:textStyle="bold"/>
+
