@@ -117,11 +117,11 @@ public class SettingsActivity extends PreferenceActivity {
 						R.string.tablet_layout_setting_key);
 
 				if (checkedId == R.id.smallRadioButton) {
-					editor.putBoolean(key, false);
+					editor.putInt("theme",R.layout.mainkeyboard_light);
 					editor.commit();
 					showPreview();
 				} else {
-					editor.putBoolean(key, true);
+					editor.putInt("theme",R.layout.mainkeyboard_light);
 					editor.commit();
 					showPreview();
 				}
