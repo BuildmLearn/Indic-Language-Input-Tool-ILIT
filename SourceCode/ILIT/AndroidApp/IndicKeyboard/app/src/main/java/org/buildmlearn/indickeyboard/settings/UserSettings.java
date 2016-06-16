@@ -22,7 +22,7 @@ public class UserSettings extends PreferenceFragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
  
-        addPreferencesFromResource(R.xml.settings);
+      //  addPreferencesFromResource(R.xml.settings); //will add with proper layout
         SharedPreferences settings = getPreferenceManager().getSharedPreferences();
         prefs = settings;
         editor = settings.edit();

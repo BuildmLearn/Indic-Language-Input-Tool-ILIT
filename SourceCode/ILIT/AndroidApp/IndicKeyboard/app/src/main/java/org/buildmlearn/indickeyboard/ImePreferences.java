@@ -38,6 +38,7 @@ public class ImePreferences extends PreferenceActivity {
 
             // Load the preferences from an XML resource
             addPreferencesFromResource(R.xml.ime_preferences);
+            addPreferencesFromResource(R.xml.settings);
         }
     }
 }

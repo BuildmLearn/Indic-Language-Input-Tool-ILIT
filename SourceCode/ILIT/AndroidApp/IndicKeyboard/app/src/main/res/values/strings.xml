@@ -2,6 +2,7 @@
     <string name="app_name">IndicKeyboard</string>
     <string name="action_settings">Settings</string>
     <string name="language_name">Language Name</string>
+    <string name="vibrate_on_keypress">Vibrate on Key Press</string>
 
     <string name="menu_language">ENG</string>
     <!-- Special characters -->
