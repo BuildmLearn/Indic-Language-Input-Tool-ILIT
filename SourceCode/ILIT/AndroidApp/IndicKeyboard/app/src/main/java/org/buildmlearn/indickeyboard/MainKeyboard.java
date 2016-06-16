@@ -1,20 +1,23 @@
 package org.buildmlearn.indickeyboard;
 
 
+import android.content.Context;
 import android.content.SharedPreferences;
 import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
 import android.media.AudioManager;
+import android.os.Vibrator;
+import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
 import android.util.Log;
+import android.view.HapticFeedbackConstants;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
-import android.preference.PreferenceManager;
 
 import java.util.ArrayList;
 
@@ -40,6 +43,7 @@ public class MainKeyboard extends InputMethodService
     private String language; //current language of the keyboard
     private String displayMode; //Maintains the Orientation of user's device for different layouts
     private boolean caps = false; //caps lock key
+    private boolean mVibrateOn;
 
     @Override
 
@@ -142,6 +146,7 @@ public class MainKeyboard extends InputMethodService
     private void setMainKeyboardView() {
         SharedPreferences settings = PreferenceManager.getDefaultSharedPreferences(this);
         //int theme=settings.getInt("theme",R.layout.mainkeyboard);
+        mVibrateOn = settings.getBoolean("vibrate_on", true);
         int theme=R.layout.mainkeyboard_dark;
         kv = (CustomKeyboardView) getLayoutInflater().inflate(theme, null);
     }
@@ -169,6 +174,26 @@ public class MainKeyboard extends InputMethodService
 
     }
 
+    private void vibrate() {
+        if (!mVibrateOn) {
+            return;
+        }
+        vibrate(30);//30ms
+    }
+
+    void vibrate(int len) {
+        Vibrator v = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
+        if (v != null) {
+            v.vibrate(len);
+            return;
+        }
+
+        if ( kv!= null) {
+            kv.performHapticFeedback(
+                    HapticFeedbackConstants.KEYBOARD_TAP,
+                    HapticFeedbackConstants.FLAG_IGNORE_GLOBAL_SETTING);
+        }
+    }
 
     private void playClick(int keyCode) {
         AudioManager am = (AudioManager) getSystemService(AUDIO_SERVICE);
@@ -222,6 +247,7 @@ public class MainKeyboard extends InputMethodService
     @Override
     public void onKey(int primaryCode, int[] keyCodes) {
         ic = getCurrentInputConnection();
+        vibrate();
         playClick(primaryCode);
         switch (primaryCode) {
             case Keyboard.KEYCODE_DELETE:
@@ -440,7 +466,6 @@ public class MainKeyboard extends InputMethodService
         currentEventTriggered = eventcode; //Set the Event
 
         first_consonant = (currentKeyboard == Constants.CurrentKeyboard_MAIN) ? LanguageUtilites.first(language) : LanguageUtilites.extendedFirst(language);
-   
         if (!currentAdaptive) {   //Extended is needed
             dependentVowels = LanguageUtilites.getDependentVowelsExtended(language, displayMode);
             independentVowels = LanguageUtilites.getIndependentVowelsExtended(language, displayMode);
