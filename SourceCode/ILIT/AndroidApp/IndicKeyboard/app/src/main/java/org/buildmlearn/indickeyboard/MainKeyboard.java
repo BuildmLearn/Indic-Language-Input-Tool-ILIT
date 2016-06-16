@@ -301,7 +301,8 @@ public class MainKeyboard extends InputMethodService
                 if (extendedKeyboard != keyboard) {
                     kv.setKeyboard(extendedKeyboard);
                     currentKeyboard = Constants.CurrentKeyboard_EXTENDED;
-                    currentAdaptive=false; //retain the state
+                    currentViewHasVowel = true;
+                    currentAdaptive=true; //start from beginning
                     changeAdaptive(Constants.main_to_extended_consonant); //Redraw
                     kv.invalidateAllKeys();
                 }
@@ -317,7 +318,8 @@ public class MainKeyboard extends InputMethodService
             case Constants.extended_consonant_to_main:
                 kv.setKeyboard(keyboard);
                 currentKeyboard = Constants.CurrentKeyboard_MAIN;
-                currentAdaptive=false; //retain the state
+                currentViewHasVowel = true;
+                currentAdaptive=true; //start from beginning
                 changeAdaptive(Constants.extended_consonant_to_main); //Redraw
                 kv.invalidateAllKeys();
                 break;
@@ -438,6 +440,7 @@ public class MainKeyboard extends InputMethodService
         currentEventTriggered = eventcode; //Set the Event
 
         first_consonant = (currentKeyboard == Constants.CurrentKeyboard_MAIN) ? LanguageUtilites.first(language) : LanguageUtilites.extendedFirst(language);
+   
         if (!currentAdaptive) {   //Extended is needed
             dependentVowels = LanguageUtilites.getDependentVowelsExtended(language, displayMode);
             independentVowels = LanguageUtilites.getIndependentVowelsExtended(language, displayMode);
