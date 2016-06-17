@@ -12,7 +12,7 @@
     android:visibility="visible"
     android:keyTextSize="20.0sp"
     android:labelTextSize="20.0sp"
-    android:keyBackground="@drawable/keyboard_background_lxx_dark"
+    android:keyBackground="@drawable/btn_keyboard_key_lxx_dark"
 
     android:background="@drawable/keyboard_background_lxx_dark"
 
