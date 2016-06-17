@@ -4,6 +4,7 @@ public class Constants {
 
     public static final int SPACE_KEY = 32;
     public static final int DELIMITER_KEY = 124;
+    public static final int LongPressSPACEKEY= -107;
     public static final int KEYCODE_OPTIONS = -106;
     public static final int KEYCODE_LANGUAGE_SWITCH = -105;
     public static final int orientation_retain_adaptive = -104;

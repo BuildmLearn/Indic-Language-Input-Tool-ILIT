@@ -1,18 +1,11 @@
 package org.buildmlearn.indickeyboard;
 
 import android.content.Context;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
-import android.graphics.drawable.Drawable;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
 import android.support.v4.content.ContextCompat;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.inputmethod.InputMethodSubtype;
-
-import java.util.List;
 
 
 public class CustomKeyboardView extends KeyboardView {
@@ -33,9 +26,10 @@ public class CustomKeyboardView extends KeyboardView {
 
     @Override
     public boolean onLongPress(Keyboard.Key key) {
-        MainKeyboard mk = new MainKeyboard();
-        Log.d("check", mk.toString());
-        mk.onLongPress(key);
+        if (key.codes[0] == Constants.SPACE_KEY) {
+            getOnKeyboardActionListener().onKey(Constants.LongPressSPACEKEY, null);
+            return true;
+        }
         return super.onLongPress(key);
 
     }
@@ -45,12 +39,13 @@ public class CustomKeyboardView extends KeyboardView {
         keyboard.setSpaceIcon(ContextCompat.getDrawable(getContext(),subtype.getIconResId()));
         invalidateAllKeys();
     }
-
+/*
     @Override
     public void onDraw(Canvas canvas) {
-        Drawable dr = new ColorDrawable(Color.BLUE);
-        dr.setAlpha(30);
         super.onDraw(canvas);
+       Drawable dr = new ColorDrawable(Color.BLUE);
+        dr.setAlpha(30);
+
         List<Keyboard.Key> keys = getKeyboard().getKeys();
         for (Keyboard.Key key : keys) {
             dr.setBounds(key.x, key.y, key.x + key.width, key.y + key.height);
@@ -85,5 +80,5 @@ public class CustomKeyboardView extends KeyboardView {
 */
 
         }
-    }
+
 

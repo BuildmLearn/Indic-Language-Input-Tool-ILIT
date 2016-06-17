@@ -212,19 +212,6 @@ public class MainKeyboard extends InputMethodService
         }
     }
 
-    public void onLongPress(Keyboard.Key key) {
-        /*
-        To implement to select multiple languages
-
-        */
-        if (key.codes[0] == Constants.SPACE_KEY) {
-            Log.d("imm", String.valueOf(mInputMethodManager == null));
-            //mInputMethodManager.showInputMethodPicker(); Will use to show various languages available
-            changeLanguage = true;
-
-        }
-
-    }
 
     private LatinKeyboard getKeyboardFromRes(int resourceId) {
         if (resourceId != 0) {
@@ -281,6 +268,11 @@ public class MainKeyboard extends InputMethodService
                 }
                 currentEventTriggered = Constants.SPACE_KEY;
                 break;
+
+            case Constants.LongPressSPACEKEY:
+                mInputMethodManager.showInputMethodPicker();
+                break;
+
             /*
             Delimiter Key.
             Just like Full Stop in Latin.
