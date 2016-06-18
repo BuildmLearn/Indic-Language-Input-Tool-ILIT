@@ -122,8 +122,8 @@
             android:keyIcon="@drawable/sym_keyboard_space"
             android:keyWidth="40%p" />
         <Key
-            android:codes="124"
-            android:keyLabel="|"
+            android:codes="124,63"
+            android:keyIcon="@drawable/sym_keyboard_delimeter" android:popupCharacters="|?" android:popupKeyboard="@xml/keyboard_popup_template"
             android:keyWidth="20%p" />
         <Key
             android:codes="-93"

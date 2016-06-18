@@ -30,11 +30,12 @@
             android:keyLabel="ઉ" />
         <Key
             android:codes="2698"
-            android:horizontalGap="2%"
+
             android:keyLabel="ઊ" />
         <Key
             android:codes="-99"
             android:keyEdgeFlags="right"
+            android:horizontalGap="2%"
             android:keyLabel="અ "
             android:keyTextSize="21.0sp"
             android:keyWidth="20%p"
@@ -64,10 +65,11 @@
         <Key
             android:codes="2691"
             android:keyLabel="અઃ"
-            android:horizontalGap="2%"/>
+           />
         <Key
             android:codes="-98"
             android:keyEdgeFlags="right"
+            android:horizontalGap="2%"
             android:keyIcon="@drawable/sym_keyboard_next"
             android:keyWidth="20%p" />
     </Row>
@@ -201,8 +203,8 @@
             android:keyIcon="@drawable/sym_keyboard_space"
             android:keyWidth="40%p" />
         <Key
-            android:codes="124"
-            android:keyLabel="| "
+            android:codes="124,63"
+            android:keyIcon="@drawable/sym_keyboard_delimeter" android:popupCharacters="|?" android:popupKeyboard="@xml/keyboard_popup_template"
             android:keyWidth="20%p" />
         <Key
             android:codes="-94"
