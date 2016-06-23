@@ -17,9 +17,7 @@ import android.view.inputmethod.InputMethodInfo;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.RadioButton;
 import android.widget.RadioGroup;
-import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -58,20 +56,13 @@ public class SettingsActivity extends PreferenceActivity {
 		previewEditText = (EditText) layout
 				.findViewById(R.id.preview_edit_text);
 		instructionTextView = (TextView) layout.findViewById(R.id.instruction);
-		radioGroup = (RadioGroup) layout.findViewById(R.id.layoutRadioGroup);
+
 		rateus = (Button) layout.findViewById(R.id.rateus);
 		doYouLikeTextView = (TextView) layout.findViewById(R.id.likeus);
 
-		RadioButton smallRadio = (RadioButton) layout
-				.findViewById(R.id.smallRadioButton);
-		RadioButton bigRadio = (RadioButton) layout
-				.findViewById(R.id.bigRadioButton);
-	//Will add more themes and layouts here
-		String smallRadioText = getStringResourceByName("settings_layout_small");
-		String bigRadioText = getStringResourceByName("settings_layout_big");
 
-		smallRadio.setText(smallRadioText);
-		bigRadio.setText(bigRadioText);
+
+
 
 		String instruction = getStringResourceByName("settings_instruction");
 		instructionTextView.setText(instruction);
@@ -93,13 +84,6 @@ public class SettingsActivity extends PreferenceActivity {
 
 		String key = getString(R.string.tablet_layout_setting_key);
 		Boolean isBig = prefs.getBoolean(key, false);
-		if (!isBig) {
-			smallRadio.setChecked(true);
-			bigRadio.setChecked(false);
-		} else {
-			smallRadio.setChecked(false);
-			bigRadio.setChecked(true);
-		}
 
 		rateus.setOnClickListener(new OnClickListener() {
 
@@ -113,28 +97,7 @@ public class SettingsActivity extends PreferenceActivity {
 			}
 		});
 
-		OnCheckedChangeListener radioGroupOnCheckedChangeListener = new OnCheckedChangeListener() {
 
-			@Override
-			public void onCheckedChanged(RadioGroup group, int checkedId) {
-				editor = prefs.edit();
-				String key = getResources().getString(
-						R.string.tablet_layout_setting_key);
-
-				if (checkedId == R.id.smallRadioButton) {
-					editor.putInt("theme",R.layout.mainkeyboard_light);
-					editor.commit();
-					showPreview();
-				} else {
-					editor.putInt("theme",R.layout.mainkeyboard_light);
-					editor.commit();
-					showPreview();
-				}
-			}
-		};
-
-		radioGroup
-				.setOnCheckedChangeListener(radioGroupOnCheckedChangeListener);
 
 		if (isDefault && isEnabled) {
 			isTablet = isTablet(this);
@@ -218,16 +181,11 @@ public class SettingsActivity extends PreferenceActivity {
 	}
 
 	public void setCorrectText() {
-		RadioButton smallRadio = (RadioButton) layout
-				.findViewById(R.id.smallRadioButton);
-		RadioButton bigRadio = (RadioButton) layout
-				.findViewById(R.id.bigRadioButton);
 
 		String smallRadioText = getStringResourceByName("settings_layout_small");
 		String bigRadioText = getStringResourceByName("settings_layout_big");
 
-		smallRadio.setText(smallRadioText);
-		bigRadio.setText(bigRadioText);
+		
 
 		String instruction = getStringResourceByName("settings_instruction");
 		instructionTextView.setText(instruction);

@@ -18,46 +18,14 @@
         android:paddingTop="10dp"
         android:paddingBottom="10dp" /> 
     
-    <RadioGroup
-        android:id="@+id/layoutRadioGroup"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_below="@id/instruction"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:orientation="horizontal" >
-        <RadioButton
-            android:id="@+id/smallRadioButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            style="@style/settings_layout"
-            android:button="@null"
-            android:focusable="false"
-            android:layout_weight="1"
-            android:text="@string/settings_layout_small" >
-        </RadioButton>
-        
 
-        <RadioButton
-            android:id="@+id/bigRadioButton"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="center_horizontal"
-            style="@style/settings_layout"
-            android:button="@null"
-            android:layout_weight="1"
-            android:focusable="false"
-            android:text="@string/settings_layout_big" />
-
-    </RadioGroup>
     
     <EditText android:id="@+id/preview_edit_text"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
         android:layout_marginRight="16dp"
-        android:layout_below="@id/layoutRadioGroup"
+        android:layout_below="@id/instruction"
         android:hint="@string/preview_your_settings"/>
     
      <TextView
@@ -86,7 +54,6 @@
     <fragment android:id="@+id/settings_fragment" 
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_below="@id/layoutRadioGroup"
         android:layout_above="@id/rateus"
         android:name="org.buildmlearn.indickeyboard.settings.UserSettings"/>
     
