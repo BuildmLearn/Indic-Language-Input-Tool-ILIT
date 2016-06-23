@@ -3,6 +3,7 @@
     package="org.buildmlearn.indickeyboard">
 
     <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="android.permission.INTERNET" />
 
     <application
         android:allowBackup="true"
@@ -46,7 +47,9 @@
                 android:resource="@xml/method" />
 
         </service>
-
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="b7fd69b6e0e3432e7f14d6b458920e0c2ee0714e" />
 
     </application>
 

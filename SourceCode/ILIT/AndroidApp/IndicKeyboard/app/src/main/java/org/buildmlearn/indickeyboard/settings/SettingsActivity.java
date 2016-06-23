@@ -23,9 +23,13 @@ import android.widget.RadioGroup.OnCheckedChangeListener;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
+import com.crashlytics.android.Crashlytics;
+
 import org.buildmlearn.indickeyboard.R;
 
 import java.util.List;
+
+import io.fabric.sdk.android.Fabric;
 
 public class SettingsActivity extends PreferenceActivity {
 	public static boolean isTablet;
@@ -44,6 +48,7 @@ public class SettingsActivity extends PreferenceActivity {
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		Fabric.with(this, new Crashlytics());
 		if (getIntent().getExtras() != null) {
 			inEnglish = getIntent().getExtras().getBoolean("inEnglish", false);
 		}
