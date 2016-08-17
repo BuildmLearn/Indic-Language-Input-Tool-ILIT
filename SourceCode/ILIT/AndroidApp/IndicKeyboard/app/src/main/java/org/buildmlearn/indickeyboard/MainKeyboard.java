@@ -1,25 +1,35 @@
 package org.buildmlearn.indickeyboard;
 
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.inputmethodservice.InputMethodService;
 import android.inputmethodservice.Keyboard;
 import android.inputmethodservice.KeyboardView;
 import android.media.AudioManager;
+import android.os.IBinder;
 import android.os.Vibrator;
 import android.preference.PreferenceManager;
 import android.support.v4.content.ContextCompat;
+import android.text.InputType;
+import android.text.method.MetaKeyKeyListener;
 import android.util.Log;
 import android.view.HapticFeedbackConstants;
+import android.view.KeyCharacterMap;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.inputmethod.CompletionInfo;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputConnection;
 import android.view.inputmethod.InputMethodManager;
 import android.view.inputmethod.InputMethodSubtype;
+import org.buildmlearn.indickeyboard.prediction.DBHelper;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainKeyboard extends InputMethodService
         implements KeyboardView.OnKeyboardActionListener {
@@ -44,6 +54,19 @@ public class MainKeyboard extends InputMethodService
     private String displayMode; //Maintains the Orientation of user's device for different layouts
     private boolean caps = false; //caps lock key
     private boolean mVibrateOn;
+    private boolean isPassword;
+    private CandidateView mCandidateView;
+    private CompletionInfo[] mCompletions;
+    private String mWordSeparators;
+    private StringBuilder mComposing = new StringBuilder();
+    private boolean mPredictionOn;
+    private boolean mCompletionOn;
+    private int mLastDisplayWidth;
+    private ArrayList<String> suggList;
+    public DBHelper db;
+    public String[] predicted=new String[5];
+    public String prevword="";
+    public String currword="";
 
     @Override
 
@@ -56,13 +79,31 @@ public class MainKeyboard extends InputMethodService
 
     @Override
     public void onStartInputView(EditorInfo info, boolean restarting) {
+
+
         ic = getCurrentInputConnection();
-        // setImeOptions(); will call this when having multiple languages to select from.
+        mWordSeparators = getResources().getString(R.string.word_separators);
+        setImeOptions(); //will call this when having multiple languages to select from.
+        mComposing.setLength(0);
+        updateCandidates();
+        mPredictionOn = false;
+        mCompletionOn = false;
+        mCompletions = null;
         String prevDisplayMode = displayMode;
         detectDisplayMode();
         if (displayMode != prevDisplayMode) {
             setInputView(onCreateInputView()); //Orientation changed
         }
+    }
+    /**
+     * Called by the framework when your view for showing candidates needs to
+     * be generated, like {@link #onCreateInputView}.
+     */
+    @Override
+    public View onCreateCandidatesView() {
+        mCandidateView = new CandidateView(this);
+        mCandidateView.setService(this);
+        return mCandidateView;
     }
 
     @Override
@@ -71,6 +112,7 @@ public class MainKeyboard extends InputMethodService
 
         detectDisplayMode();//detect the orientation
         initializeLanguage();//Gets the language at run time from the choosen InputMethodSubtype & sets it to language varible
+        initializeDatabase();
         setMainKeyboardView();//create the mainkeyboard view and set it to keybaordview kv
         createKeyboards();//create main,extended,symbol and phonepad layouts
         keyboard=getCurrentKeyboard();
@@ -80,6 +122,12 @@ public class MainKeyboard extends InputMethodService
         kv.setPreviewEnabled(false);
         checkForOrientationAdaptiveCorrection();
         return kv;
+    }
+
+    private void initializeDatabase(){
+
+        db=new DBHelper(getApplicationContext(),language);
+        try{db.createDataBase();} catch (Exception e){ }
     }
 
     private LatinKeyboard getCurrentKeyboard()
@@ -159,9 +207,11 @@ public class MainKeyboard extends InputMethodService
     }
 
     private void initialize() {
+
         currentViewHasVowel = true;
         currentAdaptive = true;
         currentKeyboard = Constants.CurrentKeyboard_MAIN;
+
     }
 
     @Override
@@ -230,48 +280,115 @@ public class MainKeyboard extends InputMethodService
     public void onRelease(int primaryCode) {
 
     }
+    public boolean isWordSeparator(int code) {
+        String separators = getWordSeparators();
+        return separators.contains(String.valueOf((char)code));
+    }
+    private String getWordSeparators() {
+        return mWordSeparators;
+    }
+
+
+    private void handleClose() {
+        commitTyped(getCurrentInputConnection());
+        requestHideSelf(0);
+        kv.closing();
+    }
+
+    private IBinder getToken() {
+        final Dialog dialog = getWindow();
+        if (dialog == null) {
+            return null;
+        }
+        final Window window = dialog.getWindow();
+        if (window == null) {
+            return null;
+        }
+        return window.getAttributes().token;
+    }
+
+
+
+
+    public void setSuggestions(List<String> suggestions, boolean completions,
+                               boolean typedWordValid) {
+        if (suggestions != null && suggestions.size() > 0) {
+            setCandidatesViewShown(true);
+        } else if (isExtractViewShown()) {
+            setCandidatesViewShown(true);
+        }
+        if (mCandidateView != null) {
+            mCandidateView.setSuggestions(suggestions, completions, typedWordValid);
+        }
+    }
+
 
     @Override
     public void onKey(int primaryCode, int[] keyCodes) {
-        ic = getCurrentInputConnection();
-        vibrate();
-        playClick(primaryCode);
-        switch (primaryCode) {
-            case Keyboard.KEYCODE_DELETE:
-                ic.deleteSurroundingText(1, 0);
-                if(!currentViewHasVowel){
-                    //Delete will bring back the Vowel mode
-                    currentViewHasVowel = true;
-                    currentAdaptive=true; //start from beginning
-                    changeAdaptive(Constants.adaptive_consonantCombinations_to_vowel);
-                    kv.invalidateAllKeys();
+
+
+            ic = getCurrentInputConnection();
+            vibrate();
+            playClick(primaryCode);
+
+            if(isWordSeparator(primaryCode))
+            {
+                prevword=mComposing.toString();
+                if (mComposing.length() > 0) {
+                    commitTyped(getCurrentInputConnection());
                 }
-                break;
 
-            case Keyboard.KEYCODE_SHIFT:
-                caps = !caps;
-                keyboard.setShifted(caps);
-                kv.invalidateAllKeys();
-                currentEventTriggered = Keyboard.KEYCODE_SHIFT;
-                break;
+            }
+            switch (primaryCode) {
+                case Keyboard.KEYCODE_DELETE:
+                    int length=mComposing.length();
+                    if (length > 1) {
+                        mComposing.delete(length - 1, length);
+                        getCurrentInputConnection().setComposingText(mComposing, 1);
+                        updateCandidates();
+                    } else if (length > 0) {
+                        mComposing.setLength(0);
+                        getCurrentInputConnection().commitText("", 0);
+                        updateCandidates();
+                    }
 
-            case Keyboard.KEYCODE_DONE:
-                ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));
-                currentEventTriggered = Keyboard.KEYCODE_DONE;
-                break;
+                    //Still left
+                    ic.deleteSurroundingText(1, 0);
 
-            case Constants.SPACE_KEY:
+                    if (!currentViewHasVowel) {
+                        //Delete will bring back the Vowel mode
+                        currentViewHasVowel = true;
+                        currentAdaptive = true; //start from beginning
+                        changeAdaptive(Constants.adaptive_consonantCombinations_to_vowel);
+                        kv.invalidateAllKeys();
+                    }
+                    break;
+
+                case Keyboard.KEYCODE_SHIFT:
+                    caps = !caps;
+                    keyboard.setShifted(caps);
+                    kv.invalidateAllKeys();
+                    currentEventTriggered = Keyboard.KEYCODE_SHIFT;
+                    break;
+
+                case Keyboard.KEYCODE_DONE:
+
+                    ic.sendKeyEvent(new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_ENTER));
+                    currentEventTriggered = Keyboard.KEYCODE_DONE;
+                    break;
+
+                case Constants.SPACE_KEY:
                 /* space key code here
                  * To Add : Ability to Change Language and Keyboard here */
-                if (!changeLanguage) {
-                    ic.commitText(" ", 1);
-                }
-                currentEventTriggered = Constants.SPACE_KEY;
-                break;
+                    if (!changeLanguage) {
+                        ic.commitText(" ", 1);
+                    }
+                    currentEventTriggered = Constants.SPACE_KEY;
+                    break;
 
-            case Constants.LongPressSPACEKEY:
-                mInputMethodManager.showInputMethodPicker();
-                break;
+                case Constants.LongPressSPACEKEY:
+                    mInputMethodManager.showInputMethodPicker();
+                    break;
 
             /*
             Delimiter Key.
@@ -279,10 +396,10 @@ public class MainKeyboard extends InputMethodService
             In Devanagari |
             So addition of this would add 1 extra space before addition of next word.
              */
-            case Constants.DELIMITER_KEY:
-                ic.commitText("| ", 1);
-                currentEventTriggered = Constants.DELIMITER_KEY;
-                break;
+                case Constants.DELIMITER_KEY:
+                    ic.commitText("| ", 1);
+                    currentEventTriggered = Constants.DELIMITER_KEY;
+                    break;
 
             /*
 
@@ -292,39 +409,39 @@ public class MainKeyboard extends InputMethodService
 
             */
 
-            case Constants.SYMBOL:
-                kv.setKeyboard(symbols);
-                updateDigits(language);
-                currentKeyboard = Constants.CurrentKeyboard_SYMBOL;
-                currentEventTriggered = Constants.SYMBOL;
-                break;
+                case Constants.SYMBOL:
+                    kv.setKeyboard(symbols);
+                    updateDigits(language);
+                    currentKeyboard = Constants.CurrentKeyboard_SYMBOL;
+                    currentEventTriggered = Constants.SYMBOL;
+                    break;
 
-            case Constants.PHONEPAD:
-                kv.setKeyboard(phonepad);
-                updateDigits(language);
-                currentKeyboard = Constants.CurrentKeyboard_PHONEPAD;
-                currentEventTriggered = Constants.PHONEPAD;
-                break;
+                case Constants.PHONEPAD:
+                    kv.setKeyboard(phonepad);
+                    updateDigits(language);
+                    currentKeyboard = Constants.CurrentKeyboard_PHONEPAD;
+                    currentEventTriggered = Constants.PHONEPAD;
+                    break;
 
-            case Constants.ABC:
-                //ABC key Alpha Mode
-                kv.setKeyboard(keyboard);
-                currentKeyboard = Constants.CurrentKeyboard_MAIN;
-                currentAdaptive=true; //start from beginning
-                changeAdaptive(Constants.ABC); //Redraw
-                kv.invalidateAllKeys();
-                break;
-
-            case Constants.main_to_extended_consonant:
-                if (extendedKeyboard != keyboard) {
-                    kv.setKeyboard(extendedKeyboard);
-                    currentKeyboard = Constants.CurrentKeyboard_EXTENDED;
-                    currentViewHasVowel = true;
-                    currentAdaptive=true; //start from beginning
-                    changeAdaptive(Constants.main_to_extended_consonant); //Redraw
+                case Constants.ABC:
+                    //ABC key Alpha Mode
+                    kv.setKeyboard(keyboard);
+                    currentKeyboard = Constants.CurrentKeyboard_MAIN;
+                    currentAdaptive = true; //start from beginning
+                    changeAdaptive(Constants.ABC); //Redraw
                     kv.invalidateAllKeys();
-                }
-                break;
+                    break;
+
+                case Constants.main_to_extended_consonant:
+                    if (extendedKeyboard != keyboard) {
+                        kv.setKeyboard(extendedKeyboard);
+                        currentKeyboard = Constants.CurrentKeyboard_EXTENDED;
+                        currentViewHasVowel = true;
+                        currentAdaptive = true; //start from beginning
+                        changeAdaptive(Constants.main_to_extended_consonant); //Redraw
+                        kv.invalidateAllKeys();
+                    }
+                    break;
 
             /*
             Current Keyboard is Extended Consonants.
@@ -333,104 +450,125 @@ public class MainKeyboard extends InputMethodService
 
              */
 
-            case Constants.extended_consonant_to_main:
-                kv.setKeyboard(keyboard);
-                currentKeyboard = Constants.CurrentKeyboard_MAIN;
-                currentViewHasVowel = true;
-                currentAdaptive=true; //start from beginning
-                changeAdaptive(Constants.extended_consonant_to_main); //Redraw
-                kv.invalidateAllKeys();
-                break;
+                case Constants.extended_consonant_to_main:
+                    kv.setKeyboard(keyboard);
+                    currentKeyboard = Constants.CurrentKeyboard_MAIN;
+                    currentViewHasVowel = true;
+                    currentAdaptive = true; //start from beginning
+                    changeAdaptive(Constants.extended_consonant_to_main); //Redraw
+                    kv.invalidateAllKeys();
+                    break;
 
             /*
             Adaptive Area has Consonants right now.
             Load vowels in the Adaptive Area
 
              */
-            case Constants.adaptive_consonantCombinations_to_vowel:
-                currentViewHasVowel = true;
-                currentAdaptive=true; //start from first
-                changeAdaptive(Constants.adaptive_consonantCombinations_to_vowel);
-                kv.invalidateAllKeys();
-                break;
+                case Constants.adaptive_consonantCombinations_to_vowel:
+                    currentViewHasVowel = true;
+                    currentAdaptive = true; //start from first
+                    changeAdaptive(Constants.adaptive_consonantCombinations_to_vowel);
+                    kv.invalidateAllKeys();
+                    break;
               /*
             Adaptive Area has Vowels right now.
             Load consonant combinations in the Adaptive Area .
              consonant is the current consonant pressed or the consonant last pressed.
 
              */
-            case Constants.adaptive_vowel_to_consonantCombinations:
+                case Constants.adaptive_vowel_to_consonantCombinations:
 
-                currentViewHasVowel = false;
-                currentAdaptive=true; //start from beginning
-                changeAdaptive(Constants.adaptive_vowel_to_consonantCombinations);
-                kv.invalidateAllKeys();
-                break;
+                    currentViewHasVowel = false;
+                    currentAdaptive = true; //start from beginning
+                    changeAdaptive(Constants.adaptive_vowel_to_consonantCombinations);
+                    kv.invalidateAllKeys();
+                    break;
 
-            case Constants.extended_adaptive:
-                currentAdaptive = false;
-                changeAdaptive(Constants.extended_adaptive);
-                kv.invalidateAllKeys();
-                break;
+                case Constants.extended_adaptive:
+                    currentAdaptive = false;
+                    changeAdaptive(Constants.extended_adaptive);
+                    kv.invalidateAllKeys();
+                    break;
 
-            case Constants.main_adaptive:
-                currentAdaptive = true;
-                changeAdaptive(Constants.main_adaptive);
-                kv.invalidateAllKeys();
-                break;
+                case Constants.main_adaptive:
+                    currentAdaptive = true;
+                    changeAdaptive(Constants.main_adaptive);
+                    kv.invalidateAllKeys();
+                    break;
 
-            default:
+                default:
 
                     /*
                     Primary Code is the int unicoded code point value of char
                     Get the char value from the primaryCode
                                          */
-                char code = (char) primaryCode;
-
+                    char code = (char) primaryCode;
                     /*
                     Check if the char is a consonant of the Language
                     If yes, load its combinations in the Adaptive Area.
 
                      */
-                if (LanguageUtilites.IsConsonant(primaryCode, language)) {
-                    last_consonant_pressed = primaryCode;
-                    currentViewHasVowel = false;
-                    currentAdaptive=true; //start from beginning
-                    changeAdaptive(Constants.adaptive_consonantFillsCombinations);
-                    kv.invalidateAllKeys();
+                    if (LanguageUtilites.IsConsonant(primaryCode, language)) {
+                        last_consonant_pressed = primaryCode;
+                        currentViewHasVowel = false;
+                        currentAdaptive = true; //start from beginning
+                        changeAdaptive(Constants.adaptive_consonantFillsCombinations);
+                       // mComposing.append((char)primaryCode);
+                        kv.invalidateAllKeys();
 
-                }
+                    }
 
                     /*
                     Check if the char is a dependent vowel of the Script.
 
 
                      */
-                if (LanguageUtilites.IsDependentVowel(primaryCode, language)) {
-                    int pre = LanguageUtilites.IndependentPretext(primaryCode, language);
-                    if (pre != -1 && currentViewHasVowel) {
+                    if (LanguageUtilites.IsDependentVowel(primaryCode, language)) {
+                        int pre = LanguageUtilites.IndependentPretext(primaryCode, language);
+                        if (pre != -1 && currentViewHasVowel) {
 
-                        ic.commitText(String.valueOf((char) pre), 1);
+                            //ic.commitText(String.valueOf((char) pre), 1);
+                            mComposing.append((char)pre);
+
+                        }
+                        boolean dontaddprevious = currentEventTriggered == Constants.adaptive_consonantFillsCombinations;
+
+                        if (!dontaddprevious && !currentViewHasVowel) {
+                         //   ic.commitText(String.valueOf((char) last_consonant_pressed), 1); //Add previous coz Adaptive lies open
+                            mComposing.append((char)last_consonant_pressed);
+                        }
+                        currentEventTriggered = Constants.adaptive_dependent;
 
                     }
-                    boolean dontaddprevious = currentEventTriggered == Constants.adaptive_consonantFillsCombinations;
 
-                    if (!dontaddprevious && !currentViewHasVowel) {
-                        ic.commitText(String.valueOf((char) last_consonant_pressed), 1); //Add previous coz Adaptive lies open
+
+                    if (Character.isLetter(code) && caps) {
+                        code = Character.toUpperCase(code);
+
                     }
-                    currentEventTriggered = Constants.adaptive_dependent;
-
-                }
 
 
-                if (Character.isLetter(code) && caps) {
-                    code = Character.toUpperCase(code);
+                    //ic.commitText(String.valueOf(code), 1); //finally add the key after all the processing
+                    mComposing.append(code);
+                    getCurrentInputConnection().setComposingText(mComposing, mComposing.length());
 
-                }
+/*
+                    if(getWordSeparators().contains(prevword))
+                    {
+                        //prev word was seperator
 
+                        prevword="";
+                        currword=String.valueOf(code);
+                    }
 
-                ic.commitText(String.valueOf(code), 1); //finally add the key after all the processing
+                    else
+                    {
+                        prevword=currword;
+                        currword=mComposing.toString();
+                        //currword=String.valueOf(code);
+                    }*/
 
+                    updateCandidates();
                     /* In case to deal with letters with multiple keycodes
                         String tempMultiple="";
                         if (keyCodes.length > 1) {
@@ -443,8 +581,9 @@ public class MainKeyboard extends InputMethodService
                      */
 
 
+            }
         }
-    }
+
 
     /*
     Deals with the Adaptive Area : Events and changing the keys based on the events that triggered them
@@ -614,9 +753,221 @@ public class MainKeyboard extends InputMethodService
            }
 
     @Override
-    public void onText(CharSequence text) {
+    public void onFinishInputView(boolean finishingInput) {
+        super.onFinishInputView(finishingInput);
+
+        if(!isPassword) {
+      //      mKeyLogger.writeToLocalStorage();
+        }
+        //mKeyLogger.extractedText="";
+        mComposing.setLength(0);
+       // updateCandidates();
+
+        // We only hide the candidates window w
+        // a particular editor, to avoid poppin
+        // up and down if the user is entering
+        // its window.
+        setCandidatesViewShown(false);
 
     }
+
+    @Override public void onFinishInput() {
+        super.onFinishInput();
+
+        // Clear current composing text and candidates.
+        mComposing.setLength(0);
+        updateCandidates();
+
+        // We only hide the candidates window when finishing input on
+        // a particular editor, to avoid popping the underlying application
+        // up and down if the user is entering text into the bottom of
+        // its window.
+        setCandidatesViewShown(false);
+
+    }
+
+    /**
+     * Deal with the editor reporting movement of its cursor.
+     */
+    @Override public void onUpdateSelection(int oldSelStart, int oldSelEnd,
+                                            int newSelStart, int newSelEnd,
+                                            int candidatesStart, int candidatesEnd) {
+        super.onUpdateSelection(oldSelStart, oldSelEnd, newSelStart, newSelEnd,
+                candidatesStart, candidatesEnd);
+
+        // If the current selection in the text view changes, we should
+        // clear whatever candidate text we have.
+        if (mComposing.length() > 0 && (newSelStart != candidatesEnd
+                || newSelEnd != candidatesEnd)) {
+            mComposing.setLength(0);
+            updateCandidates();
+            InputConnection ic = getCurrentInputConnection();
+            if (ic != null) {
+                ic.finishComposingText();
+            }
+        }
+    }
+
+    /**
+     * This tells us about completions that the editor has determined based
+     * on the current text in it.  We want to use this in fullscreen mode
+     * to show the completions ourself, since the editor can not be seen
+     * in that situation.
+     */
+    @Override public void onDisplayCompletions(CompletionInfo[] completions) {
+        if (mCompletionOn) {
+            mCompletions = completions;
+            if (completions == null) {
+                setSuggestions(null, false, false);
+                return;
+            }
+            suggList=new ArrayList<String>();
+
+            for (int i = 0; i < completions.length; i++) {
+                CompletionInfo ci = completions[i];
+                if (ci != null) suggList.add(ci.getText().toString());
+            }
+            setSuggestions(suggList, true, true);
+        }
+    }
+
+    /**
+     * Helper function to commit any text being composed in to the editor.
+     */
+    private void commitTyped(InputConnection inputConnection) {
+        Log.d("commit typed",String.valueOf(mComposing));
+        if (mComposing.length() > 0) {
+            inputConnection.commitText(mComposing, mComposing.length());
+            Log.d("commit typed",String.valueOf(mComposing));
+            mComposing.setLength(0);
+            updateCandidates();
+
+
+        }
+        }
+
+
+
+
+    private void printArray(String [] a)
+    {
+        for(String i:a)
+        {
+            Log.d("predicted",i);
+        }
+    }
+
+    void setImeOptions() {
+        Resources res = getResources();
+        EditorInfo ei = getCurrentInputEditorInfo();
+        int textOptions = ei.inputType;
+        int options = ei.imeOptions;
+
+
+               switch (textOptions) {
+            case EditorInfo.TYPE_NUMBER_VARIATION_PASSWORD:
+                this.setPassword(true);
+                break;
+            case EditorInfo.TYPE_TEXT_VARIATION_PASSWORD:
+                this.setPassword(true);
+                break;
+            case EditorInfo.TYPE_TEXT_VARIATION_VISIBLE_PASSWORD:
+                this.setPassword(true);
+                break;
+            case EditorInfo.TYPE_TEXT_VARIATION_WEB_PASSWORD:
+                this.setPassword(true);
+                break;
+            default:
+                this.setPassword(false);
+                break;
+        }
+
+        kv.invalidateAllKeys();
+
+    }
+
+    public boolean isPassword() {
+        return isPassword;
+    }
+
+    public void setPassword(boolean isPassword) {
+        this.isPassword = isPassword;
+    }
+
+
+
+    public void pickDefaultCandidate() {
+        pickSuggestionManually(0, new ArrayList<String>());
+    }
+
+    public void pickSuggestionManually(int index,List<String> sugg) {
+        Log.d("pick",String.valueOf(index));
+        String s=String.valueOf(mCompletionOn ) + String.valueOf(mCompletions==null) + " ";
+        Log.d("pick1",s);
+        Log.d("pick11",sugg.get(index));
+        if (mCompletionOn && mCompletions != null && index >= 0
+                && index < mCompletions.length) {
+            String s2=String.valueOf(mCompletions[index] );
+            Log.d("pick2",s2);
+            CompletionInfo ci = mCompletions[index];
+            getCurrentInputConnection().commitCompletion(ci);
+            if (mCandidateView != null) {
+                mCandidateView.clear();
+            }
+
+        } else if (mComposing.length() > 0) {
+            // If we were generating candidate suggestions for the current
+            // text, we would commit one of them here.  But for this sample,
+            // we will just commit the current text.
+            getCurrentInputConnection().commitText(
+                    sugg.get(index),sugg.get(index).length());
+            mComposing.setLength(0);
+            updateCandidates();
+
+        }
+    }
+    @Override
+    public void onText(CharSequence text) {
+        InputConnection ic = getCurrentInputConnection();
+        if (ic == null) return;
+        ic.beginBatchEdit();
+        if (mComposing.length() > 0) {
+            commitTyped(ic);
+        }
+        ic.commitText(text, 0);
+        ic.endBatchEdit();
+
+    }
+
+    /**
+     * Update the list of available candidates from the current composing
+     * text.  This will need to be filled in by however you are determining
+     * candidates.
+     */
+    private void updateCandidates() {
+        Log.d("key","entered uc" +String.valueOf(mCompletionOn)+mComposing.length());
+        if (!mCompletionOn) {
+            if (mComposing.length() > 0) {
+                ArrayList<String> list = new ArrayList<String>();
+                Log.d("Inside UC",prevword+" C : " +currword+"  MC " +mComposing.toString());
+
+                predicted=db.predictioncompletion(prevword,mComposing.toString());
+
+                for(String i : predicted)
+                {
+                    list.add(i);
+                }
+                printArray(predicted);
+
+                list.add(mComposing.toString());
+                setSuggestions(list, true, true);
+            } else {
+                setSuggestions(null, false, false);
+            }
+        }
+    }
+
+
 
     @Override
     public void swipeLeft() {
